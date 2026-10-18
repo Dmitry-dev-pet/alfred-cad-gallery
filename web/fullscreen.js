@@ -29,6 +29,7 @@
   function closeOverlay() {
     if (!overlay) return;
     overlay.classList.remove("is-expanded");
+    overlay.closest(".project-card")?.classList.remove("viewer-parent-expanded");
     overlay = null;
     document.body.classList.remove("viewer-open");
     refresh();
@@ -40,6 +41,7 @@
     if (overlay && overlay !== media) closeOverlay();
     overlay = media;
     media.classList.add("is-expanded");
+    media.closest(".project-card")?.classList.add("viewer-parent-expanded");
     document.body.classList.add("viewer-open");
     refresh();
   }
