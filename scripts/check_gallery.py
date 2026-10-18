@@ -106,13 +106,37 @@ def main() -> None:
         elif filename.endswith(".mp4"):
             assert filename in index
     assert index.count('class="model-stage"') == 3
+    assert index.count('class="model-fullscreen"') == 3
+    assert index.count('class="model-material"') == 1
+    assert 'src="./fullscreen.js"' in index
+    assert 'https://dmitry-dev-pet.github.io/' in index
+    assert 'https://dmitry-dev-pet.github.io/alfred-cad-gallery/' in (ROOT / "README.md").read_text()
     assert 'drive.google.com' not in index
+
+    material_code = (ROOT / "web" / "gearbox-materials.js").read_text()
+    assert 'function surfaceMaps' in material_code
+    assert 'function rng(seed)' in material_code
+    assert 'geometry.toNonIndexed()' in material_code
+    assert 'geometry.setAttribute("uv"' in material_code
+    assert 'new THREE.MeshPhysicalMaterial' in material_code
+    assert 'RoomEnvironment' in material_code
+    assert "https://" not in material_code, "Unexpected external texture source"
+
+    fullscreen_code = (ROOT / "web" / "fullscreen.js").read_text()
+    assert 'media.requestFullscreen' in fullscreen_code
+    assert 'document.exitFullscreen' in fullscreen_code
+    assert 'showOverlay(media)' in fullscreen_code
+    assert 'Escape' in fullscreen_code
+    assert '.model-card-media:fullscreen' in (ROOT / "web" / "styles.css").read_text()
     assert 'importmap' in index and "three@0.180.0" in index
 
     print("PASS: 7 binary assets have exact source digests")
     print("PASS: all three GLBs preserve expected source components")
     print("PASS: physical periods match source experiments")
     print("PASS: public gearbox is sanitized: 74 meshes, no OEM solids")
+    print("PASS: PBR textures have generated UVs and no external texture dependencies")
+    print("PASS: three native/mobile fallback fullscreen controls")
+    print("PASS: previous portfolio root is linked and untouched")
     print("PASS: website references and publication boundaries")
 
 
