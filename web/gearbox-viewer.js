@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { prepareGearboxFinishes } from "./gearbox-materials.js";
 
 // This viewer uses a reduced 74-part GLB made from the original FreeCAD
 // gearbox. The Pololu OEM motor CAD and unlicensed source geometry are NOT
@@ -17,6 +18,7 @@ if (stage) {
   const media = stage.closest(".card-media");
   const playButton = media.querySelector(".model-play");
   const resetButton = media.querySelector(".model-reset");
+  const materialButton = media.querySelector(".model-material");
   const speed = card.querySelector("#gearboxRpm");
   const speedOutput = card.querySelector("#gearboxRpmOutput");
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -25,7 +27,8 @@ if (stage) {
   let inputRpm = Number(speed.value);
   let phase = 0;
   let lastFrame = performance.now();
-  let renderer, controls, scene, camera, shafts;
+  let renderer, controls, scene, camera, shafts, finishController;
+  let finishMode = "studio";
   let ready = false;
 
   const shaftsMeta = [
@@ -67,6 +70,17 @@ if (stage) {
     playButton.dataset.en = playing ? "⏸ Pause" : "▶ Play";
     playButton.textContent = playButton.dataset[lang === "ru" ? "ru" : "en"];
     playButton.setAttribute("aria-pressed", String(playing));
+    if (materialButton) {
+      materialButton.dataset.ru = finishMode === "studio" ? "◈ PBR" : "▦ CAD";
+      materialButton.dataset.en = materialButton.dataset.ru;
+      materialButton.textContent = materialButton.dataset.ru;
+      materialButton.setAttribute("aria-pressed", String(finishMode === "studio"));
+      const title = lang === "ru"
+        ? (finishMode === "studio" ? "Показать исходные CAD-цвета" : "Показать PBR-материалы")
+        : (finishMode === "studio" ? "Show original CAD colors" : "Show realistic PBR materials");
+      materialButton.setAttribute("aria-label", title);
+      materialButton.setAttribute("title", title);
+    }
   }
   updateLabels();
 
@@ -80,6 +94,14 @@ if (stage) {
     if (!ready) return;
     playing = !playing;
     updateLabels();
+  });
+
+  materialButton?.addEventListener("click", () => {
+    if (!ready || !finishController) return;
+    finishMode = finishMode === "studio" ? "cad" : "studio";
+    finishController.apply(finishMode);
+    updateLabels();
+    draw();
   });
 
   resetButton.addEventListener("click", () => {
@@ -108,14 +130,12 @@ if (stage) {
     // Mesh vertices were exported in assembled FreeCAD world coordinates.
     model.updateMatrixWorld(true);
 
+    // PBR materials include seeded, generated color/roughness/bump maps and
+    // per-triangle box UVs. The original GLB colors remain one click away.
+    finishController = prepareGearboxFinishes(meshes, scene, renderer);
+    finishController.apply(finishMode);
+
     for (const mesh of meshes) {
-      // Retain the mesh vertex colors from the sanitized GLB export.
-      if (mesh.material) {
-        mesh.material = mesh.material.clone();
-        mesh.material.side = THREE.DoubleSide;
-        if ("metalness" in mesh.material) mesh.material.metalness = .28;
-        if ("roughness" in mesh.material) mesh.material.roughness = .45;
-      }
       const id = groupFor(mesh.name);
       if (id) groups.get(id).group.attach(mesh);
     }
@@ -146,16 +166,16 @@ if (stage) {
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.25;
+    renderer.toneMappingExposure = 1.10;
     renderer.domElement.setAttribute("aria-label", "3D FreeCAD gearbox with independently rotating shafts");
     renderer.domElement.setAttribute("role", "img");
     stage.appendChild(renderer.domElement);
 
-    scene.add(new THREE.HemisphereLight(0xeafff6, 0x284258, 2.8));
-    const key = new THREE.DirectionalLight(0xf2fff1, 3.2);
+    scene.add(new THREE.HemisphereLight(0xeafff6, 0x284258, 1.9));
+    const key = new THREE.DirectionalLight(0xf2fff1, 2.6);
     key.position.set(-.5, 1.1, 1.1);
     scene.add(key);
-    const fill = new THREE.DirectionalLight(0xa6d5e3, 1.6);
+    const fill = new THREE.DirectionalLight(0xa6d5e3, 1.0);
     fill.position.set(.8, -.3, -.9);
     scene.add(fill);
 
@@ -190,6 +210,7 @@ if (stage) {
       stage.querySelector(".viewer-fallback")?.remove();
       playButton.disabled = false;
       resetButton.disabled = false;
+      if (materialButton) materialButton.disabled = false;
       resize();
       draw();
     }, undefined, () => {
