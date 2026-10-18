@@ -21,6 +21,7 @@
   </script>
   <script src="./app.js" defer></script>
   <script type="module" src="./model-viewer.js"></script>
+  <script type="module" src="./gearbox-viewer.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main" data-ru="Перейти к содержимому" data-en="Skip to content">Перейти к содержимому</a>
@@ -118,9 +119,11 @@
 
         <div class="project-grid">
           <article class="project-card" data-category="mechanics">
-            <div class="card-media gear-card-media">
-              <div class="media-marker">001 <span>FREECAD + BLENDER</span></div>
-              <svg viewBox="0 0 440 260" aria-hidden="true" focusable="false">
+            <div class="card-media model-card-media gearbox-card-media">
+              <div class="media-marker">001 <span>FREECAD / INTERACTIVE GLB</span></div>
+              <div class="model-stage" data-model="gearbox" aria-label="Interactive 3D of a four-to-one gearbox">
+                <div class="viewer-fallback gearbox-fallback">
+                  <svg viewBox="0 0 440 260" aria-hidden="true" focusable="false">
                 <g opacity=".13" stroke="#c8ecdf"><path d="M0 50H440M0 130H440M0 210H440M80 0V260M160 0V260M240 0V260M320 0V260M400 0V260"/></g>
                 <g transform="translate(128 144)"><g class="wheel wheel-a">
                   <circle r="57" fill="#183442" stroke="#c6d8d2" stroke-width="11" stroke-dasharray="13 7"/>
@@ -137,12 +140,24 @@
                 <path d="M276 144h53" stroke="#8ce7b6" stroke-width="3" stroke-dasharray="7 7"/>
                 <g fill="#b9d6d3" font-family="monospace" font-size="12"><text x="75" y="234">INPUT</text><text x="322" y="234">OUTPUT</text><text x="331" y="128" font-size="22" fill="#c8f5c9">4:1</text></g>
               </svg>
-              <div class="media-bottom"><span data-ru="Схема, не CAD-чертёж" data-en="Illustration, not CAD drawing">Схема, не CAD-чертёж</span><span>↗</span></div>
+                  <span class="viewer-fallback-note" data-ru="Загружаем геометрию FreeCAD…" data-en="Loading original FreeCAD geometry…">Загружаем геометрию FreeCAD…</span>
+                </div>
+              </div>
+              <div class="model-toolbar" aria-label="3D gearbox playback controls">
+                <button type="button" class="model-play" disabled aria-pressed="true" data-ru="⏸ Пауза" data-en="⏸ Pause">⏸ Пауза</button>
+                <button type="button" class="model-reset" disabled aria-label="Reset 3D camera" title="Reset view">⟲</button>
+                <a href="./credits.html" data-ru="Лицензии ↗" data-en="Credits ↗">Лицензии ↗</a>
+              </div>
+              <div class="media-bottom"><span data-ru="3D: вращайте модель, меняйте обороты" data-en="3D: orbit the model, adjust speed">3D: вращайте модель, меняйте обороты</span><span class="play-dot">● GLB</span></div>
             </div>
             <div class="card-body"><p class="card-eyebrow">MECHANISM / #01</p><h3 data-ru="Двухступенчатый редуктор" data-en="Two-stage gearbox">Двухступенчатый редуктор</h3>
-              <p data-ru="Параметрическая сборка, кинематика 4:1, анимация разборки в FreeCAD и сцена для Blender." data-en="Parametric assembly, 4:1 kinematics, exploded animation in FreeCAD, and a Blender scene.">Параметрическая сборка, кинематика 4:1, анимация разборки в FreeCAD и сцена для Blender.</p>
-              <div class="tag-list"><span>FreeCAD</span><span>Blender</span><span>4:1</span></div>
-              <a class="card-link" href="#approach"><span data-ru="Как устроен процесс" data-en="How the workflow works">Как устроен процесс</span><span aria-hidden="true">↗</span></a>
+              <p data-ru="Настоящая геометрия шестерён и валов FreeCAD. Вращайте 3D-сборку и меняйте скорость: выходной вал движется вчетверо медленнее входного." data-en="Real FreeCAD gear and shaft geometry. Orbit the 3D assembly and adjust the speed: the output turns four times slower than the input.">Настоящая геометрия шестерён и валов FreeCAD. Вращайте 3D-сборку и меняйте скорость: выходной вал движется вчетверо медленнее входного.</p>
+              <div class="gearbox-speed-control">
+                <div class="gearbox-speed-label"><label for="gearboxRpm" data-ru="Обороты ведущего вала" data-en="Input shaft speed">Обороты ведущего вала</label><output for="gearboxRpm" id="gearboxRpmOutput" aria-live="polite">60 → 15 об/мин</output></div>
+                <input id="gearboxRpm" type="range" min="10" max="120" step="5" value="60" aria-label="Input shaft revolutions per minute">
+              </div>
+              <div class="tag-list"><span>FreeCAD</span><span>Three.js</span><span>4:1</span></div>
+              <a class="card-link" href="./credits.html"><span data-ru="Источники и лицензии" data-en="Sources and licenses">Источники и лицензии</span><span aria-hidden="true">↗</span></a>
             </div>
           </article>
 
