@@ -6,11 +6,11 @@ A public, bilingual **FreeCAD + Blender + physics** gallery hosted with GitHub P
 
 ## Experiments
 
-- **Two-stage gearbox (4:1):** a deliberately schematic animation. The private editable CAD assembly contains third-party components and is not included in the public site.
+- **Two-stage gearbox (4:1):** actual geometry of frame, shafts, and CC0 spur gears from our FreeCAD assembly, exported to a **1.13 MB GLB**. 74 public scene meshes include simplified motor/bearing stand-ins; no Pololu OEM CAD solids. Users can orbit, zoom, pause and adjust input shaft rpm. The browser animates the input/middle/output shafts at +1 : −1/2 : +1/4 speed.
 - **Physical pendulum:** three genuine FreeCAD models with different pivot locations. Minimum small-angle period **1.180703 s** for a 600 mm homogeneous rod, with pivot **126.794919 mm** from the top.
 - **Sliding-collar pendulum:** three genuine FreeCAD models with different fixed collar positions. Minimum small-angle period **1.0369155 s** at **133.587565 mm** below the pivot.
 
-The two physics cards load original FreeCAD geometry converted into **GLB (glTF binary)** via **Three.js 0.180.0** with OrbitControls. Each configuration is independently animated in the browser using the physically calculated period; these are not recordings of a live FreeCAD process. The original FreeCAD MP4 videos are available as fallback in `web/media/`.
+All three project cards load FreeCAD-derived geometry converted into **GLB (glTF binary)** via **Three.js 0.180.0** with OrbitControls. Each configuration is independently animated in the browser using the physically calculated period; these are not recordings of a live FreeCAD process. The original FreeCAD MP4 videos remain available as fallbacks for the two pendulum experiments.
 
 ## Storage and publication boundaries
 
@@ -46,3 +46,13 @@ node --check web/model-viewer.js
 ## Provenance
 
 The original FreeCAD models and MP4s were produced on 2026-10-18 as part of Alfred CAD. Private source files remain authoritative; public GLBs are visualization exports.
+
+## Public gearbox: source rights and disclosure
+
+The public `web/media/gearbox-public.glb` consists of 74 render meshes (sha256 `490ed7e58b5d1dae470123a222fd5e953342552092e8917d3f688fbaba1f1386`). It has been stripped of `Pololu4692Case` and `Pololu4692Dshaft` exact OEM geometry, as well as the imported bearing/screw solids from the private FreeCAD assembly. The motor is represented by two generic cylinders and the bearings by simplified rings. The original editable `.FCStd`, STEP, Blender and recovery files remain private.
+
+The modified 20/40-tooth spur gear geometry originated from Innerscene's CC0 library. We explicitly acknowledge those sources in the public [credits page](web/credits.html). The private assembly also used FreeCAD Library CC BY 3.0 components; those original source assets are excluded from the public GLB, and their provenance and license are still documented on that credits page. This is an illustrative kinematic scene, not manufacturing data or evidence of manufacturer endorsement.
+
+Unlike a prerendered GIF or MP4, a publicly hosted GLB contains extractable polygonal geometry and is **downloadable by any viewer**. The public gallery intentionally distributes this reduced mesh. No access credentials or private Drive file IDs are included.
+
+The gearbox speed control uses a purely kinematic relation. The animation preserves the original mesh geometry and rotates input, intermediate and output shaft groups about parallel axes at x=0, x=60 mm, and x=120 mm, with speed factors +1, −1/2 and +1/4. This does not simulate load, friction, bearing life or motor performance.

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#091321">
+  <meta name="description" content="Источники и лицензии интерактивных моделей FreeCAD — Alfred CAD Lab">
+  <title>Источники и лицензии · Alfred CAD Lab</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    .credits-main{max-width:830px;margin:auto;padding:78px 0 110px}
+    .credits-main h1{font-size:clamp(38px,6vw,66px);font-weight:730;letter-spacing:-.055em;line-height:1.06;margin:17px 0 24px}
+    .credits-main h2{font-size:24px;letter-spacing:-.035em;margin:42px 0 14px}
+    .credits-main p,.credits-main li{font-size:15px;line-height:1.85;color:#b2c8cf}
+    .credits-main a:not(.back-link){color:#c1f4cf;text-decoration:underline;text-underline-offset:4px}
+    .credits-main a:hover{color:#e1ffe5}
+    .credits-main ul{padding-left:20px}
+    .credits-main li{margin-bottom:14px}
+    .credits-main .note{padding:21px 23px;border:1px solid #375661;background:#132a38;border-radius:8px;margin:30px 0}
+    .credits-main .note p{margin-bottom:0}
+    .credits-main code{font-family:ui-monospace,monospace;color:#ddf7d8}
+    .credits-main .lang-second{margin:0 0 16px;font-size:13px;color:#86a8b4}
+    .back-link{display:inline-flex;gap:8px;align-items:center;padding:11px 15px;color:#d1f9da;border:1px solid #45655e;border-radius:6px;margin-top:12px}
+    .credits-main .section-kicker{font-size:11px}
+    @media(max-width:600px){.credits-main{padding-top:55px}.credits-main h1{font-size:40px}.credits-main h2{font-size:21px}}
+  </style>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="Alfred CAD Lab">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="brand-title">ALFRED<span class="brand-slash">/</span>CAD <small>LAB</small></span>
+      </a>
+      <nav class="main-nav"><a href="./#projects">← Проекты / Projects</a></nav>
+      <div class="header-actions"><a class="github-link" href="https://github.com/Dmitry-dev-pet/alfred-cad-gallery" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div>
+    </header>
+
+    <main class="credits-main">
+      <span class="section-kicker">CAD SOURCES / OPEN ASSETS</span>
+      <h1>Источники и лицензии</h1>
+      <p class="lang-second">Sources and licenses · Gearbox visualization</p>
+      <p>Интерактивный редуктор создан из нашей демонстрационной сборки FreeCAD с четырьмя шестернями и передаточным отношением 4:1. Для публичного просмотра мы экспортировали полигональную геометрию в формат GLB. Это не исходный параметрический файл, не спецификация для изготовления и не готовое изделие.</p>
+      <p class="lang-second">This is a triangulated viewer export of our four-to-one FreeCAD gearbox experiment, not the editable CAD source or manufacturing documentation.</p>
+
+      <h2>Шестерни / Gears — CC0</h2>
+      <ul>
+        <li><a href="https://www.innerscene.com/tools/library/3d-parts/module-2-20-tooth-involute-spur-gear-01cc5a6e" target="_blank" rel="noopener noreferrer">Innerscene — Module 2, 20-tooth involute spur gear</a>. CC0 / Public Domain.</li>
+        <li><a href="https://www.innerscene.com/tools/library/3d-parts/module-2-40-tooth-involute-spur-gear-499004ac" target="_blank" rel="noopener noreferrer">Innerscene — Module 2, 40-tooth involute spur gear</a>. CC0 / Public Domain.</li>
+      </ul>
+      <p>Шестерни были доработаны для сборки (отверстия, соединения и посадочные элементы), а затем триангулированы для отображения в браузере.</p>
+      <p class="lang-second">The public mesh contains modified and triangulated derivatives of these CC0 gear shapes.</p>
+
+      <h2>Подшипники и крепёж / Bearings and fasteners</h2>
+      <p>В исходном приватном CAD-проекте использовались детали из <a href="https://github.com/FreeCAD/FreeCAD-library" target="_blank" rel="noopener noreferrer">FreeCAD Parts Library</a>, опубликованные под <a href="https://github.com/FreeCAD/FreeCAD-library/blob/master/LICENSE-Assets" target="_blank" rel="noopener noreferrer">CC BY 3.0</a>. Для данной веб-сцены импортированные тела библиотечных подшипников и винтов были исключены и заменены упрощёнными геометрическими элементами. Ссылка на библиотеку приведена для полноты происхождения оригинальной сборки.</p>
+      <p class="lang-second">The private source assembly used FreeCAD Parts Library assets (CC BY 3.0). Those imported bearing and screw solids have been excluded from the public GLB and replaced with simplified geometry. This credit acknowledges the origin of the private experiment.</p>
+
+      <h2>Двигатель / Motor</h2>
+      <p>Оригинальная OEM-модель двигателя <a href="https://www.pololu.com/product/4692" target="_blank" rel="noopener noreferrer">Pololu 4692</a> <strong>не включена</strong> в опубликованный GLB. Видимые корпус и вал двигателя — простые условные цилиндры. Это независимая учебная визуализация, не одобренная и не сертифицированная Pololu.</p>
+      <p class="lang-second">The manufacturer's original CAD body and output shaft are not distributed. Generic placeholder cylinders represent the motor and output shaft. No manufacturer endorsement is implied.</p>
+
+      <div class="note">
+        <strong>О модели / About this model</strong>
+        <p>Показано 74 отдельных геометрических объекта, включая условные компоненты. Вращение трёх валов соответствует кинематическому отношению +1 : −1/2 : +1/4. Изменение оборотов на странице — кинематическая демонстрация, не расчёт нагрузки, износа или безопасности. Публичный файл <a href="./media/gearbox-public.glb" download>gearbox-public.glb</a> может быть скачан из браузера.</p>
+      </div>
+      <p class="lang-second">74 displayed mesh objects, including simplified parts. Rotation ratios are +1 : −1/2 : +1/4. Shaft speeds illustrate kinematics only. The publicly served GLB can be downloaded.</p>
+
+      <a class="back-link" href="./#projects">← Вернуться к моделям / Back to models</a>
+    </main>
+
+    <footer class="site-footer"><div><strong>ALFRED<span class="brand-slash">/</span>CAD LAB</strong><p>Digital mechanics · FreeCAD × Three.js</p></div><div><a href="https://github.com/Dmitry-dev-pet/alfred-cad-gallery" target="_blank" rel="noopener noreferrer">SOURCE ↗</a><span>2026</span></div></footer>
+  </div>
+</body>
+</html>
