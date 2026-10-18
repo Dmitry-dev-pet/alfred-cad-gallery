@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="ru" data-lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#091321">
+  <meta name="description" content="Alfred CAD Lab — FreeCAD, Blender и эксперименты по механике. Публичная витрина исследований и интерактивных расчётов.">
+  <meta property="og:title" content="Alfred CAD Lab — механика в движении">
+  <meta property="og:description" content="Редуктор, маятник с оптимальной осью и маятник с подвижным грузом. Настоящие анимации FreeCAD и интерактивные графики.">
+  <meta property="og:type" content="website">
+  <title>Alfred CAD Lab — механика в движении</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script src="./app.js" defer></script>
+  <script type="module" src="./model-viewer.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main" data-ru="Перейти к содержимому" data-en="Skip to content">Перейти к содержимому</a>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Alfred CAD Lab">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="brand-title">ALFRED<span class="brand-slash">/</span>CAD <small>LAB</small></span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="#projects" data-ru="Проекты" data-en="Projects">Проекты</a>
+        <a href="#laboratory" data-ru="Лаборатория" data-en="Interactive lab">Лаборатория</a>
+        <a href="#approach" data-ru="Метод" data-en="Approach">Метод</a>
+      </nav>
+      <div class="header-actions">
+        <button class="language-toggle" type="button" id="languageToggle" aria-label="Switch to English">EN</button>
+        <a class="github-link" href="https://github.com/Dmitry-dev-pet/alfred-cad-gallery" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository">GitHub <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> ALFRED EXPERIMENTAL / 2026</p>
+          <h1 id="hero-title"><span data-ru="Механика," data-en="Mechanics,">Механика,</span><br><em data-ru="которая оживает." data-en="set in motion.">которая оживает.</em></h1>
+          <p class="hero-lead" data-ru="Моделируем механизмы, ставим физические задачи на минимум и превращаем расчёты в анимацию. От параметрической модели до проверяемого результата." data-en="We model mechanisms, solve optimization problems in physics, and turn calculations into motion. From parametric CAD to verifiable results.">Моделируем механизмы, ставим физические задачи на минимум и превращаем расчёты в анимацию. От параметрической модели до проверяемого результата.</p>
+          <div class="hero-buttons">
+            <a class="primary-button" href="#projects"><span data-ru="Смотреть эксперименты" data-en="Explore experiments">Смотреть эксперименты</span><span aria-hidden="true">↗</span></a>
+            <a class="text-button" href="#laboratory"><span data-ru="Изменить параметры" data-en="Adjust parameters">Изменить параметры</span> ↓</a>
+          </div>
+          <div class="hero-footnote"><span class="tiny-line"></span><span data-ru="Три проекта. Две среды 3D. Одна исследовательская лаборатория." data-en="Three projects. Two 3D engines. One experimental laboratory.">Три проекта. Две среды 3D. Одна исследовательская лаборатория.</span></div>
+        </div>
+        <div class="hero-machine" role="img" aria-label="Декоративная схема вращающихся шестерён, не инженерный чертёж">
+          <div class="machine-background"></div>
+          <svg viewBox="0 0 560 500" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="metal" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#cfddd8"/><stop offset="100%" stop-color="#6c8c91"/></linearGradient>
+              <linearGradient id="mint" x1="0" x2="1" y1="1" y2="0"><stop offset="0%" stop-color="#6ddeb8"/><stop offset="100%" stop-color="#d7fbbe"/></linearGradient>
+              <filter id="shine"><feGaussianBlur stdDeviation="8"/></filter>
+            </defs>
+            <g opacity=".17" stroke="#93a9b3" stroke-width="1"><path d="M-10 90H570M-10 170H570M-10 250H570M-10 330H570M-10 410H570M100 -10V510M180 -10V510M260 -10V510M340 -10V510M420 -10V510M500 -10V510" fill="none"/></g>
+            <circle cx="285" cy="250" r="187" fill="none" stroke="#9ce6c8" opacity=".17" stroke-dasharray="6 12"/>
+            <circle cx="285" cy="250" r="222" fill="none" stroke="#9ce6c8" opacity=".1"/>
+            <g transform="translate(220 247)">
+              <g class="wheel wheel-a">
+                <circle r="94" fill="#122839" stroke="url(#metal)" stroke-width="12" stroke-dasharray="17 7"/>
+                <circle r="71" fill="#132c3a" stroke="#93b3b2" stroke-width="2"/>
+                <path d="M-67 0H67M0-67V67M-47-47L47 47M47-47L-47 47" stroke="#709198" stroke-width="12" stroke-linecap="round"/>
+                <circle r="31" fill="#0d202d" stroke="#a6c9bd" stroke-width="5"/>
+                <circle r="13" fill="#c0ecd0"/>
+              </g>
+            </g>
+            <g transform="translate(374 247)">
+              <g class="wheel wheel-b">
+                <circle r="61" fill="#16303c" stroke="url(#mint)" stroke-width="10" stroke-dasharray="11 6"/>
+                <circle r="44" fill="#1b3d48" stroke="#7bbfae" stroke-width="2"/>
+                <path d="M-39 0H39M0-39V39M-27-27L27 27M27-27L-27 27" stroke="#65b3a2" stroke-width="9" stroke-linecap="round"/>
+                <circle r="18" fill="#102330" stroke="#c2f4c3" stroke-width="5"/>
+                <circle r="8" fill="#d7f7d1"/>
+              </g>
+            </g>
+            <g transform="translate(385 109)">
+              <g class="wheel wheel-c">
+                <circle r="42" fill="#102834" stroke="#9bb9c5" stroke-width="8" stroke-dasharray="9 5"/>
+                <circle r="27" fill="#183343" stroke="#769fb0" stroke-width="4"/>
+                <path d="M-24 0H24M0-24V24" stroke="#8cb0b0" stroke-width="7" stroke-linecap="round"/>
+                <circle r="10" fill="#d3e6c7"/>
+              </g>
+            </g>
+            <circle cx="220" cy="247" r="107" fill="none" stroke="#b5e3d4" opacity=".22"/>
+            <path d="M62 75h90M62 75v40M505 387h-86M505 387v40" fill="none" stroke="#d2eddf" stroke-width="1.5" opacity=".65"/>
+            <g fill="#d8ebdc" font-size="12" font-family="monospace" letter-spacing="2"><text x="61" y="64">KINEMATICS</text><text x="504" y="375" text-anchor="end">ROTATION</text></g>
+          </svg>
+          <div class="hero-machine-caption"><span>FIG. 01 — KINEMATIC STUDY</span><span class="caption-arrow">↗</span></div>
+        </div>
+      </section>
+
+      <section class="stats" aria-label="Lab at a glance">
+        <div><strong>03</strong><span data-ru="эксперимента" data-en="experiments">эксперимента</span></div>
+        <div><strong>02</strong><span data-ru="3D-среды" data-en="3D engines">3D-среды</span></div>
+        <div><strong>01</strong><span data-ru="общий подход" data-en="method">общий подход</span></div>
+        <p class="stats-aside">FREECAD <span>×</span> BLENDER <span>×</span> PHYSICS</p>
+      </section>
+
+      <section class="projects-section section-gap" id="projects" aria-labelledby="projects-heading">
+        <div class="section-heading">
+          <div><span class="section-kicker">01 / SELECTED WORK</span><h2 id="projects-heading" data-ru="Проекты в движении" data-en="Projects in motion">Проекты в движении</h2></div>
+          <p data-ru="Не рендер ради рендера: у каждой сцены есть модель, гипотеза и проверяемый результат." data-en="Not visuals for their own sake: each scene starts with a model, a hypothesis, and a testable result.">Не рендер ради рендера: у каждой сцены есть модель, гипотеза и проверяемый результат.</p>
+        </div>
+        <div class="filter-bar" role="group" aria-label="Project filters">
+          <button type="button" class="filter-button active" aria-pressed="true" data-filter="all" data-ru="Все / 03" data-en="All / 03">Все / 03</button>
+          <button type="button" class="filter-button" aria-pressed="false" data-filter="mechanics" data-ru="Механизмы / 01" data-en="Mechanisms / 01">Механизмы / 01</button>
+          <button type="button" class="filter-button" aria-pressed="false" data-filter="physics" data-ru="Физика / 02" data-en="Physics / 02">Физика / 02</button>
+        </div>
+
+        <div class="project-grid">
+          <article class="project-card" data-category="mechanics">
+            <div class="card-media gear-card-media">
+              <div class="media-marker">001 <span>FREECAD + BLENDER</span></div>
+              <svg viewBox="0 0 440 260" aria-hidden="true" focusable="false">
+                <g opacity=".13" stroke="#c8ecdf"><path d="M0 50H440M0 130H440M0 210H440M80 0V260M160 0V260M240 0V260M320 0V260M400 0V260"/></g>
+                <g transform="translate(128 144)"><g class="wheel wheel-a">
+                  <circle r="57" fill="#183442" stroke="#c6d8d2" stroke-width="11" stroke-dasharray="13 7"/>
+                  <circle r="37" fill="none" stroke="#9eb7ba" stroke-width="4"/>
+                  <path d="M-30 0H30M0-30V30" stroke="#7798a6" stroke-width="11" stroke-linecap="round"/>
+                  <circle r="12" fill="#c9ecce"/>
+                </g></g>
+                <g transform="translate(232 144)"><g class="wheel wheel-b">
+                  <circle r="46" fill="#173c41" stroke="#95dfb4" stroke-width="9" stroke-dasharray="10 5"/>
+                  <circle r="28" fill="none" stroke="#9bd9b6" stroke-width="4"/>
+                  <path d="M-24 0H24M0-24V24" stroke="#6db598" stroke-width="8" stroke-linecap="round"/>
+                  <circle r="10" fill="#dbf7c3"/>
+                </g></g>
+                <path d="M276 144h53" stroke="#8ce7b6" stroke-width="3" stroke-dasharray="7 7"/>
+                <g fill="#b9d6d3" font-family="monospace" font-size="12"><text x="75" y="234">INPUT</text><text x="322" y="234">OUTPUT</text><text x="331" y="128" font-size="22" fill="#c8f5c9">4:1</text></g>
+              </svg>
+              <div class="media-bottom"><span data-ru="Схема, не CAD-чертёж" data-en="Illustration, not CAD drawing">Схема, не CAD-чертёж</span><span>↗</span></div>
+            </div>
+            <div class="card-body"><p class="card-eyebrow">MECHANISM / #01</p><h3 data-ru="Двухступенчатый редуктор" data-en="Two-stage gearbox">Двухступенчатый редуктор</h3>
+              <p data-ru="Параметрическая сборка, кинематика 4:1, анимация разборки в FreeCAD и сцена для Blender." data-en="Parametric assembly, 4:1 kinematics, exploded animation in FreeCAD, and a Blender scene.">Параметрическая сборка, кинематика 4:1, анимация разборки в FreeCAD и сцена для Blender.</p>
+              <div class="tag-list"><span>FreeCAD</span><span>Blender</span><span>4:1</span></div>
+              <a class="card-link" href="#approach"><span data-ru="Как устроен процесс" data-en="How the workflow works">Как устроен процесс</span><span aria-hidden="true">↗</span></a>
+            </div>
+          </article>
+
+          <article class="project-card" data-category="physics">
+            <div class="card-media model-card-media">
+              <div class="media-marker">002 <span>FREECAD / INTERACTIVE GLB</span></div>
+              <div class="model-stage" data-model="rod" aria-label="Interactive Three.js viewer">
+                <div class="viewer-fallback">
+                  <span data-ru="Загружаем настоящую модель FreeCAD…" data-en="Loading the original FreeCAD geometry…">Загружаем настоящую модель FreeCAD…</span>
+                  <a href="./media/pivot-pendulum.mp4" data-ru="Посмотреть видео" data-en="Watch the original video">Посмотреть видео</a>
+                </div>
+              </div>
+              <div class="model-toolbar" aria-label="3D viewer controls">
+                <button type="button" class="model-play" aria-pressed="true" data-ru="⏸ Пауза" data-en="⏸ Pause">⏸ Пауза</button>
+                <button type="button" class="model-reset" aria-label="Reset 3D camera" title="Reset view">⟲</button>
+                <a href="./media/pivot-pendulum.mp4" target="_blank" rel="noopener" data-ru="Видео ↗" data-en="Video ↗">Видео ↗</a>
+              </div>
+              <div class="media-bottom"><span data-ru="3D: вращайте мышью или пальцем" data-en="3D: drag to rotate, pinch to zoom">3D: вращайте мышью или пальцем</span><span class="play-dot">● GLB</span></div>
+            </div>
+            <div class="card-body"><p class="card-eyebrow">PHYSICS / #02</p><h3 data-ru="Маятник: минимум периода" data-en="Pendulum: minimum period">Маятник: минимум периода</h3>
+              <p data-ru="Перемещаем ось вдоль однородного стержня. Находим минимум периода аналитически и сравниваем три движения." data-en="Move the pivot along a uniform rod. Find the analytical minimum and compare three oscillations.">Перемещаем ось вдоль однородного стержня. Находим минимум периода аналитически и сравниваем три движения.</p>
+              <div class="tag-list"><span>FreeCAD</span><span>RK4</span><span>1.1807 s</span></div>
+              <a class="card-link" href="#lab-rod"><span data-ru="Открыть интерактивный расчёт" data-en="Explore the interactive calculation">Открыть интерактивный расчёт</span><span aria-hidden="true">↗</span></a>
+            </div>
+          </article>
+
+          <article class="project-card" data-category="physics">
+            <div class="card-media model-card-media">
+              <div class="media-marker">003 <span>FREECAD / INTERACTIVE GLB</span></div>
+              <div class="model-stage" data-model="collar" aria-label="Interactive Three.js viewer">
+                <div class="viewer-fallback">
+                  <span data-ru="Загружаем настоящую модель FreeCAD…" data-en="Loading the original FreeCAD geometry…">Загружаем настоящую модель FreeCAD…</span>
+                  <a href="./media/collar-pendulum.mp4" data-ru="Посмотреть видео" data-en="Watch the original video">Посмотреть видео</a>
+                </div>
+              </div>
+              <div class="model-toolbar" aria-label="3D viewer controls">
+                <button type="button" class="model-play" aria-pressed="true" data-ru="⏸ Пауза" data-en="⏸ Pause">⏸ Пауза</button>
+                <button type="button" class="model-reset" aria-label="Reset 3D camera" title="Reset view">⟲</button>
+                <a href="./media/collar-pendulum.mp4" target="_blank" rel="noopener" data-ru="Видео ↗" data-en="Video ↗">Видео ↗</a>
+              </div>
+              <div class="media-bottom"><span data-ru="3D: вращайте мышью или пальцем" data-en="3D: drag to rotate, pinch to zoom">3D: вращайте мышью или пальцем</span><span class="play-dot">● GLB</span></div>
+            </div>
+            <div class="card-body"><p class="card-eyebrow">PHYSICS / #03</p><h3 data-ru="Маятник с подвижным грузом" data-en="Pendulum with sliding collar">Маятник с подвижным грузом</h3>
+              <p data-ru="Сдвигаем кольцо вдоль стержня и наблюдаем конкуренцию гравитационного плеча и момента инерции." data-en="Slide a collar along the rod and examine the trade-off between gravitational torque and moment of inertia.">Сдвигаем кольцо вдоль стержня и наблюдаем конкуренцию гравитационного плеча и момента инерции.</p>
+              <div class="tag-list"><span>FreeCAD</span><span>Optimization</span><span>1.0369 s</span></div>
+              <a class="card-link" href="#lab-collar"><span data-ru="Открыть интерактивный расчёт" data-en="Explore the interactive calculation">Открыть интерактивный расчёт</span><span aria-hidden="true">↗</span></a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="lab-section section-gap" id="laboratory" aria-labelledby="lab-heading">
+        <div class="section-heading">
+          <div><span class="section-kicker">02 / PLAY WITH THE PHYSICS</span><h2 id="lab-heading" data-ru="Проверьте расчёт сами" data-en="Try the physics yourself">Проверьте расчёт сами</h2></div>
+          <p data-ru="Двигайте параметры и наблюдайте за периодом. Графики вычисляются прямо в браузере без сервера; 3D-модели отображаются через Three.js." data-en="Move the sliders and watch the period change. The curves are computed in your browser without a server; 3D models use Three.js.">Двигайте параметры и наблюдайте за периодом. Графики вычисляются прямо в браузере без сервера; 3D-модели отображаются через Three.js.</p>
+        </div>
+        <div class="lab-grid">
+          <article class="lab-panel" id="lab-rod">
+            <div class="lab-topline"><span>EXPERIMENT 02</span><span>01 / 02</span></div>
+            <h3 data-ru="Где закрепить стержень?" data-en="Where should the pivot go?">Где закрепить стержень?</h3>
+            <p class="lab-intro" data-ru="Однородный стержень 600 мм, масса 0,5 кг. Амплитуда для T — 15°." data-en="Uniform rod, 600 mm long, 0.5 kg. The finite-amplitude period uses 15°.">Однородный стержень 600 мм, масса 0,5 кг. Амплитуда для T — 15°.</p>
+            <label class="slider-caption" for="pivotSlider"><span data-ru="Ось от верхнего конца" data-en="Pivot from rod top">Ось от верхнего конца</span><output id="pivotValue" for="pivotSlider">126.8 mm</output></label>
+            <input class="physics-slider" id="pivotSlider" type="range" min="20" max="250" step="0.1" value="126.8">
+            <div class="slider-limits"><span>20 mm</span><span>250 mm</span></div>
+            <div class="result-strip"><div><span>T₀ <small data-ru="малый угол" data-en="small angle">малый угол</small></span><strong id="pivotPeriod">1.1807 s</strong></div><div><span>T₁₅ <small>15°</small></span><strong id="pivotPeriod15">1.1858 s</strong></div></div>
+            <svg id="pivotGraph" class="graph" role="img" aria-label="График зависимости периода от положения оси" viewBox="0 0 600 230"></svg>
+            <div class="lab-note"><span>OPTIMUM</span><strong>a = 126.795 mm</strong><button type="button" class="reset-button" id="pivotReset" data-ru="К минимуму ↗" data-en="Reset to optimum ↗">К минимуму ↗</button></div>
+          </article>
+          <article class="lab-panel" id="lab-collar">
+            <div class="lab-topline"><span>EXPERIMENT 03</span><span>02 / 02</span></div>
+            <h3 data-ru="Куда сдвинуть кольцо?" data-en="Where should the collar sit?">Куда сдвинуть кольцо?</h3>
+            <p class="lab-intro" data-ru="Стержень 600 мм / 0,5 кг, кольцо 0,4 кг. Амплитуда для T — 20°." data-en="Rod: 600 mm / 0.5 kg; collar: 0.4 kg. The finite-amplitude period uses 20°.">Стержень 600 мм / 0,5 кг, кольцо 0,4 кг. Амплитуда для T — 20°.</p>
+            <label class="slider-caption" for="collarSlider"><span data-ru="Кольцо ниже оси" data-en="Collar below pivot">Кольцо ниже оси</span><output id="collarValue" for="collarSlider">133.6 mm</output></label>
+            <input class="physics-slider" id="collarSlider" type="range" min="35" max="410" step="0.1" value="133.6">
+            <div class="slider-limits"><span>35 mm</span><span>410 mm</span></div>
+            <div class="result-strip"><div><span>T₀ <small data-ru="малый угол" data-en="small angle">малый угол</small></span><strong id="collarPeriod">1.0369 s</strong></div><div><span>T₂₀ <small>20°</small></span><strong id="collarPeriod20">1.0449 s</strong></div></div>
+            <svg id="collarGraph" class="graph" role="img" aria-label="График периода при перемещении кольца" viewBox="0 0 600 230"></svg>
+            <div class="lab-note"><span>OPTIMUM</span><strong>x = 133.588 mm</strong><button type="button" class="reset-button" id="collarReset" data-ru="К минимуму ↗" data-en="Reset to optimum ↗">К минимуму ↗</button></div>
+          </article>
+        </div>
+        <p class="lab-disclaimer" data-ru="Модели идеализированы: малые углы для T₀, отсутствие трения, однородные твёрдые тела. Видео показывает отдельные эксперименты; ползунки изменяют только расчёт и графики." data-en="Idealized models: T₀ assumes small angles, frictionless pivots, homogeneous rigid bodies. Videos show separate experiments; sliders only update the calculation and graphs.">Модели идеализированы: малые углы для T₀, отсутствие трения, однородные твёрдые тела. Видео показывает отдельные эксперименты; ползунки изменяют только расчёт и графики.</p>
+      </section>
+
+      <section class="approach-section section-gap" id="approach">
+        <div class="approach-copy"><span class="section-kicker">03 / FROM IDEA TO MOTION</span><h2 data-ru="Каждая модель начинается с вопроса." data-en="Every model starts with a question.">Каждая модель начинается с вопроса.</h2><p data-ru="Мы сохраняем воспроизводимые исходники, параметры эксперимента и проверенные версии отдельно от публичной витрины. Здесь — безопасные для публикации записи и иллюстрации. Исходные CAD-файлы и исполняемые пакеты остаются в приватном архиве." data-en="We preserve reproducible sources, experiment parameters, and verified versions separately from this public gallery. Here we publish cleared footage and illustrations. Native CAD files and executables remain in private storage.">Мы сохраняем воспроизводимые исходники, параметры эксперимента и проверенные версии отдельно от публичной витрины. Здесь — безопасные для публикации записи и иллюстрации. Исходные CAD-файлы и исполняемые пакеты остаются в приватном архиве.</p></div>
+        <ol class="method-steps">
+          <li><span>01</span><div><strong data-ru="Физическая постановка" data-en="Physical question">Физическая постановка</strong><small data-ru="Гипотеза, параметры, ограничения" data-en="Hypothesis, parameters, assumptions">Гипотеза, параметры, ограничения</small></div></li>
+          <li><span>02</span><div><strong data-ru="Параметрическая геометрия" data-en="Parametric geometry">Параметрическая геометрия</strong><small>FreeCAD / Python</small></div></li>
+          <li><span>03</span><div><strong data-ru="Численная проверка" data-en="Numerical verification">Численная проверка</strong><small data-ru="Формулы, RK4, тесты" data-en="Equations, RK4, tests">Формулы, RK4, тесты</small></div></li>
+          <li><span>04</span><div><strong data-ru="Анимация и публикация" data-en="Motion and publication">Анимация и публикация</strong><small>FreeCAD / Blender / GitHub Pages</small></div></li>
+        </ol>
+      </section>
+    </main>
+    <footer class="site-footer"><div><strong>ALFRED<span class="brand-slash">/</span>CAD LAB</strong><p data-ru="Небольшая лаборатория цифровой механики." data-en="A small lab for computational mechanics.">Небольшая лаборатория цифровой механики.</p></div><div><a href="https://github.com/Dmitry-dev-pet/alfred-cad-gallery" target="_blank" rel="noopener noreferrer">SOURCE ↗</a><span>2026 / EXPERIMENTAL</span></div></footer>
+  </div>
+</body>
+</html>
