@@ -62,7 +62,7 @@ def check_gearbox() -> None:
     assert "ratio: -.5" in viewer and "ratio: .25" in viewer
     assert "gearbox-public.glb" in viewer and "group.rotation.y = phase * ratio" in viewer
     credits = (ROOT / "web" / "credits.html").read_text()
-    assert "creativecommons" not in credits or "CC BY 3.0" in credits
+    assert "CC BY 3.0" in credits
     assert "innerscene.com" in credits and "Pololu" in credits
     assert "drive.google.com" not in credits
     assert '<div class="model-stage" data-model="gearbox"' in (ROOT / "web" / "index.html").read_text()
@@ -99,7 +99,9 @@ def main() -> None:
 
     index = (ROOT / "web" / "index.html").read_text()
     for filename in EXPECTED:
-        if filename.endswith(".glb"):
+        if filename == "gearbox-public.glb":
+            assert filename in (ROOT / "web" / "gearbox-viewer.js").read_text()
+        elif filename.endswith(".glb"):
             assert filename in (ROOT / "web" / "model-viewer.js").read_text()
         elif filename.endswith(".mp4"):
             assert filename in index
