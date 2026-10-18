@@ -33,6 +33,7 @@ jobs:
           python3 scripts/check_gallery.py
           node --check web/app.js
           node --check web/model-viewer.js
+          node --check web/gearbox-viewer.js
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload lightweight gallery

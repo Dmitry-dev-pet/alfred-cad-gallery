@@ -105,12 +105,12 @@ def main() -> None:
             assert filename in (ROOT / "web" / "model-viewer.js").read_text()
         elif filename.endswith(".mp4"):
             assert filename in index
-    assert index.count('class="model-stage"') == 2
+    assert index.count('class="model-stage"') == 3
     assert 'drive.google.com' not in index
     assert 'importmap' in index and "three@0.180.0" in index
 
     print("PASS: 7 binary assets have exact source digests")
-    print("PASS: both GLBs preserve original FreeCAD node names")
+    print("PASS: all three GLBs preserve expected source components")
     print("PASS: physical periods match source experiments")
     print("PASS: public gearbox is sanitized: 74 meshes, no OEM solids")
     print("PASS: website references and publication boundaries")
