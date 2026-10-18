@@ -148,3 +148,23 @@ h1,h2,h3,p{margin-top:0}
 @media(max-width:900px){.main-nav{gap:18px}.site-header{gap:20px}.hero{grid-template-columns:1fr .85fr;padding:70px 0}.hero-footnote{margin-top:45px}.hero h1{font-size:clamp(43px,6.3vw,62px)}.hero-lead{font-size:14px}.project-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.project-card:last-child{grid-column:1 / -1;max-width:100%}.project-card:last-child .card-media{aspect-ratio:2.3}.lab-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}.stats-aside{display:none}.stats>div{padding:0 14px}}
 @media(max-width:650px){.site-shell{padding:0 20px}.site-header{height:78px}.brand-title{font-size:13px}.brand-mark{width:32px;height:32px}.brand-mark::before{width:19px;height:19px}.brand-mark span:nth-child(3){top:13px;left:13px}.main-nav{display:none}.header-actions{margin-left:auto;gap:8px}.github-link{padding:0 10px;font-size:11px}.language-toggle{width:40px}.hero{display:flex;flex-direction:column;align-items:stretch;padding:57px 0 44px;gap:42px}.hero h1{font-size:clamp(44px,11vw,61px)}.hero-lead{font-size:15px;margin-bottom:25px}.hero-buttons{gap:20px}.hero-footnote{margin-top:36px}.hero-machine{width:100%;max-width:480px;align-self:center;aspect-ratio:1.3}.stats{grid-template-columns:repeat(3,minmax(0,1fr));padding:21px 0}.stats>div{flex-direction:column;gap:6px;padding:0 12px}.stats strong{font-size:25px}.stats div span{font-size:10px}.section-gap{padding-top:84px}.section-heading{display:block;margin-bottom:28px}.section-heading h2,.approach-copy h2{font-size:35px}.section-heading>p{margin-top:15px;font-size:13px}.project-grid{grid-template-columns:1fr;gap:18px}.project-card:last-child{grid-column:auto}.project-card:last-child .card-media{aspect-ratio:1.6}.card-media{min-height:auto}.lab-panel{padding:24px 18px 20px}.lab-panel h3{font-size:22px}.result-strip strong{font-size:24px}.lab-intro{min-height:0}.lab-note{gap:10px}.approach-section{grid-template-columns:1fr;gap:30px;padding-bottom:84px}.method-steps div{display:block}.method-steps small{display:block;text-align:left;margin-top:7px}.site-footer{align-items:flex-start;flex-direction:column}.site-footer>div:last-child{width:100%;justify-content:space-between}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.wheel-a,.wheel-b,.wheel-c{animation:none}.project-card,.primary-button{transition:none}}
+
+/* Responsive interactive Three.js CAD stages. All geometry is loaded from
+   public, stripped GLB files; the private editable files remain in Drive. */
+.model-card-media{background:radial-gradient(ellipse at 50% 70%,#254752,#112636 73%)}
+.model-stage{position:absolute;inset:0;min-width:0;min-height:0;overflow:hidden}
+.model-stage canvas{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+.model-stage canvas:active{cursor:grabbing}
+.viewer-fallback{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;flex-direction:column;gap:15px;text-align:center;padding:40px 20px 50px;color:#b8ddda;font-size:12px;line-height:1.5;background:radial-gradient(ellipse at center,#264957,#0f2635)}
+.viewer-fallback a{display:inline-flex;padding:8px 12px;border:1px solid #91c8b6;color:#d5f2e2;border-radius:5px;font-weight:650}
+.viewer-fallback a:hover{background:#1c4144}
+.model-toolbar{position:absolute;bottom:43px;left:12px;right:12px;display:flex;align-items:center;gap:7px;z-index:5;pointer-events:none}
+.model-toolbar>*{pointer-events:auto}
+.model-toolbar button,.model-toolbar a{background:rgba(10,27,37,.86);border:1px solid #4b7279;border-radius:5px;color:#e2f2ec;padding:7px 9px;font-size:11px;font-weight:700;line-height:1.2;backdrop-filter:blur(8px)}
+.model-toolbar button:hover,.model-toolbar a:hover{border-color:var(--mint);color:var(--mint)}
+.model-toolbar a{margin-left:auto}
+.model-toolbar button:disabled{opacity:.4;cursor:not-allowed}
+.model-toolbar .model-reset{min-width:30px;font-size:18px;padding:3px 9px}
+.model-card-media .media-bottom{pointer-events:none}
+.model-card-media .media-bottom .play-dot{letter-spacing:.1em}
+@media(max-width:420px){.model-toolbar{bottom:41px;left:8px;right:8px}.model-toolbar button,.model-toolbar a{font-size:10px;padding:6px 7px}}
