@@ -181,3 +181,98 @@ h1,h2,h3,p{margin-top:0}
 .gearbox-speed-control input[type=range]{width:100%;margin:0;accent-color:var(--mint);cursor:pointer}
 .gearbox-card-media .model-toolbar a{margin-left:auto}
 @media(max-width:600px){.gearbox-fallback .viewer-fallback-note{font-size:10px}.gearbox-speed-label{font-size:12px}}
+
+/* Portfolio and CAD gallery live at two distinct GitHub Pages addresses. */
+.portfolio-link{display:inline-flex;align-items:center;color:var(--mint);font-size:12px;font-weight:680;white-space:nowrap;letter-spacing:.02em}
+.portfolio-link:hover{color:#e0ffeb;text-decoration:underline;text-underline-offset:4px}
+.site-footer>div:last-child{flex-wrap:wrap;justify-content:flex-end}
+
+/* PBR / original-CAD comparison control. No external photographic assets. */
+.gearbox-card-media .model-material{min-width:61px;letter-spacing:.035em}
+.gearbox-card-media .model-material[aria-pressed="true"]{border-color:#a9ebc6;color:#ddffe7;background:rgba(43,85,76,.86)}
+.model-toolbar .model-fullscreen{min-width:33px;font-size:20px;line-height:1;min-height:29px;padding:4px 8px}
+.model-toolbar .model-fullscreen:hover{border-color:#bff5ce}
+.model-toolbar .model-fullscreen[aria-pressed="true"]{color:var(--mint);border-color:var(--mint)}
+
+/* Native Fullscreen API on desktop and Android, CSS fullscreen on older iOS.
+   Each renderer already observes the actual .model-stage size, so both
+   modes update camera aspect ratio and device-pixel dimensions. */
+body.viewer-open{overflow:hidden!important}
+.project-card.viewer-parent-expanded{transform:none!important;overflow:visible!important}
+.model-card-media:fullscreen,
+.model-card-media.is-expanded{
+  position:fixed!important;
+  inset:0!important;
+  width:100vw!important;
+  height:100vh!important;
+  height:100dvh!important;
+  max-width:none!important;
+  max-height:none!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  aspect-ratio:auto!important;
+  border-radius:0!important;
+  z-index:99999!important;
+  background:radial-gradient(ellipse at 50% 55%,#254c59,#081823 75%);
+  box-shadow:none!important;
+}
+.model-card-media:fullscreen::backdrop{background:#081421}
+.model-card-media:fullscreen .model-stage,
+.model-card-media.is-expanded .model-stage{position:absolute;inset:0;width:100%;height:100%}
+.model-card-media:fullscreen .model-toolbar,
+.model-card-media.is-expanded .model-toolbar{
+  left:clamp(16px,3vw,42px);
+  right:clamp(16px,3vw,42px);
+  bottom:max(65px,calc(env(safe-area-inset-bottom) + 62px));
+  gap:11px;
+}
+.model-card-media:fullscreen .model-toolbar button,
+.model-card-media:fullscreen .model-toolbar a,
+.model-card-media.is-expanded .model-toolbar button,
+.model-card-media.is-expanded .model-toolbar a{
+  font-size:13px;
+  padding:11px 14px;
+  min-height:42px;
+  border-color:#577984;
+  background:rgba(9,28,38,.85);
+}
+.model-card-media:fullscreen .model-toolbar .model-fullscreen,
+.model-card-media.is-expanded .model-toolbar .model-fullscreen{font-size:25px;min-width:46px}
+.model-card-media:fullscreen .media-bottom,
+.model-card-media.is-expanded .media-bottom{
+  height:55px;
+  font-size:12px;
+  padding:0 clamp(16px,3vw,42px);
+  background:linear-gradient(transparent,rgba(5,16,25,.95));
+}
+.model-card-media:fullscreen .media-marker,
+.model-card-media.is-expanded .media-marker{top:23px;left:clamp(16px,3vw,42px);right:clamp(16px,3vw,42px)}
+.model-card-media:fullscreen .viewer-fallback-note,
+.model-card-media.is-expanded .viewer-fallback-note{bottom:130px;font-size:14px}
+
+@media(max-width:650px){
+  .portfolio-link{font-size:0;min-width:30px;justify-content:center;text-decoration:none!important}
+  .portfolio-link::before{content:"⌂";font-size:23px;line-height:1}
+  .gearbox-card-media .model-toolbar a{display:none}
+  .model-toolbar .model-material{min-width:54px}
+  .model-card-media:fullscreen .model-toolbar,
+  .model-card-media.is-expanded .model-toolbar{
+    flex-wrap:wrap;
+    gap:8px;
+    bottom:max(60px,calc(env(safe-area-inset-bottom) + 59px));
+  }
+  .model-card-media:fullscreen .model-toolbar a,
+  .model-card-media.is-expanded .model-toolbar a{display:inline-flex}
+  .model-card-media:fullscreen .model-toolbar button,
+  .model-card-media.is-expanded .model-toolbar button,
+  .model-card-media:fullscreen .model-toolbar a,
+  .model-card-media.is-expanded .model-toolbar a{padding:10px 11px;font-size:12px;min-height:40px}
+  .model-card-media:fullscreen .model-toolbar .model-fullscreen,
+  .model-card-media.is-expanded .model-toolbar .model-fullscreen{font-size:22px}
+}
+@media(max-width:410px){
+  .header-actions .github-link{font-size:0;padding:0 7px;min-width:30px}
+  .header-actions .github-link span{font-size:18px}
+  .site-footer>div:last-child{justify-content:flex-start;gap:22px}
+}

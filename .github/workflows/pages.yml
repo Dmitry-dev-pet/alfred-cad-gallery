@@ -34,6 +34,8 @@ jobs:
           node --check web/app.js
           node --check web/model-viewer.js
           node --check web/gearbox-viewer.js
+          node --check web/gearbox-materials.js
+          node --check web/fullscreen.js
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload lightweight gallery
