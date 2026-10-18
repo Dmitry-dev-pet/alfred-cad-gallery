@@ -1,18 +1,27 @@
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
-// Small, deterministic, seamless-enough industrial surface maps generated
-// locally in the visitor's browser. No photo/CDN textures and no source UVs.
-// The FreeCAD-to-GLB conversion retains triangle meshes but has no UVs, so
-// assign per-face box-planar UVs in METRES (never merely attach a texture to
-// the zero-UV mesh). This is a visual finish, not engineering data.
+/*
+ * Why this module exists:
+ * The original FreeCAD-to-GLB export contains positions + COLOR_0 but NO
+ * vertex NORMAL attributes. Lighting-dependent Three.js materials can render
+ * all-black on such geometry. We explicitly compute normals on each GLB mesh.
+ *
+ * This viewer has two independent, always-visible material modes:
+ * - Studio: generated grayscale albedo + wear/roughness + bump maps,
+ *   moderate metalness, guaranteed diffuse/ambient response.
+ * - CAD: deliberately unlit mesh colors (MeshBasicMaterial), visible even
+ *   on browsers without an environment map, or if all lights fail.
+ *
+ * No new OEM CAD, photographs, third-party textures or network requests.
+ */
 const finishes = {
-  paint:  { color: 0x477084, metalness: .30, roughness: .50, clearcoat: .25, scale: 62,  bump: .000012, seed: 1001 },
-  steel:  { color: 0xc5d5d9, metalness: .89, roughness: .31, clearcoat: .03, scale: 110, bump: .000008, seed: 2323 },
-  gear:   { color: 0xc8a57a, metalness: .94, roughness: .30, clearcoat: 0,   scale: 90,  bump: .000013, seed: 3434 },
-  wheel:  { color: 0xb0c3c8, metalness: .94, roughness: .32, clearcoat: 0,   scale: 90,  bump: .000013, seed: 4545 },
-  motor:  { color: 0x415963, metalness: .53, roughness: .49, clearcoat: .1,  scale: 64,  bump: .000012, seed: 5656 },
-  chrome: { color: 0xd4e1e1, metalness: .98, roughness: .23, clearcoat: 0,   scale: 118, bump: .000007, seed: 6767 },
+  paint:  { color: 0x7299aa, metalness: .20, roughness: .62, clearcoat: .18, scale: 10, bump: .000025, seed: 1001 },
+  steel:  { color: 0xe0e8e5, metalness: .35, roughness: .35, clearcoat: .08, scale: 15, bump: .000015, seed: 2323 },
+  gear:   { color: 0xe4b67c, metalness: .42, roughness: .38, clearcoat: .08, scale: 15, bump: .000024, seed: 3434 },
+  wheel:  { color: 0xc6d9e2, metalness: .42, roughness: .38, clearcoat: .08, scale: 15, bump: .000024, seed: 4545 },
+  motor:  { color: 0x88a4aa, metalness: .18, roughness: .60, clearcoat: .15, scale: 9,  bump: .000028, seed: 5656 },
+  chrome: { color: 0xe0ebe9, metalness: .46, roughness: .26, clearcoat: .16, scale: 18, bump: .000010, seed: 6767 },
 };
 
 function finishForPart(name) {
@@ -25,15 +34,29 @@ function finishForPart(name) {
   return "steel";
 }
 
+/* The same purposefully distinct colors used by the original CAD export. */
+export function originalCadColor(name) {
+  if (name === "Frame" || name === "MotorBracket" ||
+      name.startsWith("Cover_")) return 0x4c7a8d;
+  if (name === "MotorBody_Generic") return 0x4da8a2;
+  if (name.startsWith("Pinion")) return 0xf5bc6a;
+  if (name.startsWith("Wheel")) return 0x85e2b9;
+  if (name.startsWith("BearingGeneric")) return 0xafc1c8;
+  if (name.startsWith("Key_")) return 0xf0d7a4;
+  if (name.startsWith("Coupler")) return 0xecac79;
+  return 0xd8e3e1;
+}
+
 function rng(seed) {
-  let n = seed >>> 0;
+  let state = seed >>> 0;
   return () => {
-    n ^= n << 13;
-    n ^= n >>> 17;
-    n ^= n << 5;
-    return ((n >>> 0) / 4294967296);
+    state ^= state << 13;
+    state ^= state >>> 17;
+    state ^= state << 5;
+    return (state >>> 0) / 4294967296;
   };
 }
+const clamp = v => Math.max(0, Math.min(255, Math.round(v)));
 
 function surfaceMaps(style, renderer) {
   const size = 256;
@@ -48,63 +71,81 @@ function surfaceMaps(style, renderer) {
   const img = colorCtx.createImageData(size, size);
   const relief = reliefCtx.createImageData(size, size);
   const random = rng(style.seed);
-  const brushed = style.metalness > .7;
+  const brushed = style.metalness >= .3;
+  const coated = !brushed;
 
-  // Directional micro-grain for machined metal; isotropic micro-speckle for
-  // powder coat. Keep contrast subtle so parts look physically plausible.
+  // Deliberately visible at normal card size: broad, anisotropic machining
+  // marks and subtle scratches on metal; stippled powder coat / dark motor.
+  // Previous attempt used +/- 5 RGB steps repeated dozens of times, which
+  // mipmapped to a uniform flat color and was effectively invisible.
   for (let y = 0; y < size; y++) {
-    const line = Math.sin(y * .52) * 4 + Math.sin(y * 2.19) * 1.7;
+    const wideLine = Math.sin(y * .21) * 18 + Math.sin(y * .53) * 7;
+    const hairline = y % 47 === 0 ? 27 : y % 53 === 1 ? -24 : 0;
     for (let x = 0; x < size; x++) {
       const i = (y * size + x) * 4;
-      const grain = (random() - .5) * (brushed ? 12 : 17);
-      const streak = brushed ? line : Math.sin((x + y) * .23) * 1.8;
-      const luminance = Math.max(212, Math.min(252, Math.round(235 + grain + streak)));
-      const microHeight = Math.max(182, Math.min(251, Math.round(221 + grain * 1.7 + streak)));
-      img.data[i] = img.data[i + 1] = img.data[i + 2] = luminance;
+      const noise = (random() - .5) * (brushed ? 19 : 38);
+      const cross = coated ? Math.sin((x + y) * .19) * 11 : 0;
+      const polish = brushed ? wideLine + hairline + noise : cross + noise;
+      // Saturation around 215 preserves highlights and shadow definition.
+      const brightness = clamp(216 + polish);
+      const roughness = clamp(170 + polish * .55 + (random() - .5) * 28);
+      img.data[i] = img.data[i + 1] = img.data[i + 2] = brightness;
       img.data[i + 3] = 255;
-      relief.data[i] = relief.data[i + 1] = relief.data[i + 2] = microHeight;
+      relief.data[i] = relief.data[i + 1] = relief.data[i + 2] = roughness;
       relief.data[i + 3] = 255;
     }
   }
   colorCtx.putImageData(img, 0, 0);
   reliefCtx.putImageData(relief, 0, 0);
 
-  function tex(canvas, colorSpace) {
-    const t = new THREE.CanvasTexture(canvas);
-    t.colorSpace = colorSpace;
-    t.wrapS = t.wrapT = THREE.RepeatWrapping;
-    t.minFilter = THREE.LinearMipmapLinearFilter;
-    t.magFilter = THREE.LinearFilter;
-    t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-    t.needsUpdate = true;
-    return t;
+  function texture(canvas, colorSpace) {
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.colorSpace = colorSpace;
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.minFilter = THREE.LinearMipmapLinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    tex.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+    tex.needsUpdate = true;
+    return tex;
   }
   return {
-    map: tex(colorCanvas, THREE.SRGBColorSpace),
-    roughnessMap: tex(reliefCanvas, THREE.NoColorSpace),
-    bumpMap: tex(reliefCanvas, THREE.NoColorSpace),
+    map: texture(colorCanvas, THREE.SRGBColorSpace),
+    roughnessMap: texture(reliefCanvas, THREE.NoColorSpace),
+    bumpMap: texture(reliefCanvas, THREE.NoColorSpace),
   };
 }
 
 export function addBoxUVs(mesh, scale) {
   let geometry = mesh.geometry;
-  if (!geometry || !geometry.getAttribute("position")) return;
+  if (!geometry?.getAttribute("position")) {
+    throw new Error("Gearbox mesh is missing position data");
+  }
 
-  // Per-face UVs avoid smearing a brushed texture across cylindrical teeth,
-  // angled bearing caps and the flat top of the steel frame.
+  // CRITICAL: The original GLB has no NORMAL attributes at all.
+  // Calculate indexed vertex normals first, before per-face UV expansion.
+  // This preserves smoothed cylinder sides and correct lighting.
+  geometry = geometry.clone();
+  geometry.computeVertexNormals();
   if (geometry.index) geometry = geometry.toNonIndexed();
-  else geometry = geometry.clone();
-  const position = geometry.getAttribute("position");
-  const count = position.count;
-  if (count % 3 !== 0) throw new Error("Expected triangulated FreeCAD mesh");
 
+  const position = geometry.getAttribute("position");
+  const normal = geometry.getAttribute("normal");
+  const count = position.count;
+  if (!normal || normal.count !== count || count % 3) {
+    throw new Error("Invalid triangulated mesh normals: " + mesh.name);
+  }
+
+  // Box-planar UVs expressed in meters. Keep only 1–3 repeats per part,
+  // rather than hundreds of microscopic/invisible repeats.
   const uv = new Float32Array(count * 2);
   for (let i = 0; i < count; i += 3) {
     const ax = position.getX(i), ay = position.getY(i), az = position.getZ(i);
-    const bx = position.getX(i + 1), by = position.getY(i + 1), bz = position.getZ(i + 1);
-    const cx = position.getX(i + 2), cy = position.getY(i + 2), cz = position.getZ(i + 2);
-    const ux = bx - ax, uy = by - ay, uz = bz - az;
-    const vx = cx - ax, vy = cy - ay, vz = cz - az;
+    const ux = position.getX(i + 1) - ax;
+    const uy = position.getY(i + 1) - ay;
+    const uz = position.getZ(i + 1) - az;
+    const vx = position.getX(i + 2) - ax;
+    const vy = position.getY(i + 2) - ay;
+    const vz = position.getZ(i + 2) - az;
     const nx = Math.abs(uy * vz - uz * vy);
     const ny = Math.abs(uz * vx - ux * vz);
     const nz = Math.abs(ux * vy - uy * vx);
@@ -127,56 +168,64 @@ export function addBoxUVs(mesh, scale) {
   mesh.geometry = geometry;
 }
 
-// Returns a no-network, reversible finish controller. The original GLB
-// material stays available behind the "CAD" comparison control.
 export function prepareGearboxFinishes(meshes, scene, renderer) {
   const originals = new WeakMap();
   const prepared = new WeakMap();
   const categories = new Map();
+
+  // A genuinely unlit fallback; even with broken lighting and no IBL the
+  // user MUST be able to see all components in their original CAD colors.
   for (const mesh of meshes) {
-    const old = mesh.material;
-    const original = old?.clone() || new THREE.MeshStandardMaterial({color:0x9cb7c0});
-    original.side = THREE.DoubleSide;
-    originals.set(mesh, original);
+    originals.set(mesh, new THREE.MeshBasicMaterial({
+      color: originalCadColor(mesh.name),
+      vertexColors: false,
+      side: THREE.DoubleSide,
+      toneMapped: false,
+    }));
   }
 
   for (const [kind, style] of Object.entries(finishes)) {
     let maps = {};
-    try { maps = surfaceMaps(style, renderer); } catch { /* plain PBR fallback */ }
+    try { maps = surfaceMaps(style, renderer); } catch (err) {
+      console.warn("Gearbox surface maps unavailable; using solid PBR paint", err);
+    }
     const material = new THREE.MeshPhysicalMaterial({
       color: style.color,
       metalness: style.metalness,
       roughness: style.roughness,
       clearcoat: style.clearcoat,
-      clearcoatRoughness: .42,
-      side: THREE.DoubleSide,
+      clearcoatRoughness: .48,
       vertexColors: false,
+      side: THREE.DoubleSide,
       ...maps,
       bumpScale: style.bump,
-      envMapIntensity: 1.2,
+      // A small fill independent of environment/light intensity; a dark
+      // renderer can no longer erase the silhouette to black.
+      emissive: new THREE.Color(style.color).multiplyScalar(.35),
+      emissiveIntensity: .45,
+      envMapIntensity: .85,
     });
     categories.set(kind, material);
   }
 
-  // Compute geometric UVs only once, before the material swap, so material
-  // mode changes never modify mesh positions or shaft axes.
   for (const mesh of meshes) {
     const kind = finishForPart(mesh.name);
     addBoxUVs(mesh, finishes[kind].scale);
     prepared.set(mesh, categories.get(kind));
   }
 
-  // Recreate softbox-like reflections entirely in Three.js. If a mobile GPU
-  // cannot generate the PMREM environment, scene lights still illuminate
-  // the physically based materials.
+  // Environment improves reflections, but the material does not rely on it.
+  // Low metalness + true normals + ambient light is the guaranteed baseline.
   try {
-    const generator = new THREE.PMREMGenerator(renderer);
+    const pmrem = new THREE.PMREMGenerator(renderer);
     const room = new RoomEnvironment();
-    const environment = generator.fromScene(room, .06);
+    const environment = pmrem.fromScene(room, .06);
     scene.environment = environment.texture;
     room.dispose();
-    generator.dispose();
-  } catch { /* the direct key/fill lights remain active */ }
+    pmrem.dispose();
+  } catch (err) {
+    console.warn("Gearbox environment reflections unavailable; using direct lighting", err);
+  }
 
   return {
     apply(mode) {
@@ -185,6 +234,7 @@ export function prepareGearboxFinishes(meshes, scene, renderer) {
       }
     },
     partCount: meshes.length,
+    hasGeneratedNormals: meshes.every(m => !!m.geometry.getAttribute("normal")),
     hasGeneratedUVs: meshes.every(m => !!m.geometry.getAttribute("uv")),
   };
 }
