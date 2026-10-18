@@ -12,6 +12,14 @@ A public, bilingual **FreeCAD + Blender + physics** gallery hosted with GitHub P
 
 All three project cards load FreeCAD-derived geometry converted into **GLB (glTF binary)** via **Three.js 0.180.0** with OrbitControls. Each configuration is independently animated in the browser using the physically calculated period; these are not recordings of a live FreeCAD process. The original FreeCAD MP4 videos remain available as fallbacks for the two pendulum experiments.
 
+## Realistic rendering and fullscreen (2026-10-19)
+
+- All **three** 3D scenes have a fullscreen button (⛶). Uses the browser's native Fullscreen API when supported, including Android; a fixed-size CSS viewport fallback works on browsers that reject fullscreen. Escape exits the fallback and native fullscreen offers standard browser exit.
+- The gearbox defaults to a physically based **PBR finish**: powder-coated frame, brushed-steel shafts, polished metal bearings, satin gears and a dark motor housing. All surface variation is **procedurally generated in-browser from deterministic seeds**. No commercial material maps, generated AI artwork, new binary assets, accounts, URLs or licenses are required.
+- Since source FreeCAD-derived GLBs have **no UV coordinates**, `web/gearbox-materials.js` computes box-planar UVs per triangle before applying subtle color/roughness/bump maps. Soft studio reflections come from a locally generated Three.js RoomEnvironment. Materials never change the mesh geometry or original gear ratios.
+- The **◈ PBR / ▦ CAD** button compares realistic materials with original glTF colors. Renderers resize to the fullscreen container via ResizeObserver.
+- **Existing project portfolio is preserved at https://dmitry-dev-pet.github.io/**, in its own repository `Dmitry-dev-pet/dmitry-dev-pet.github.io`. This CAD gallery is the separate subpath `/alfred-cad-gallery/`, and links back to the main portfolio without altering its editorial curation.
+
 ## Storage and publication boundaries
 
 - **Public repository:** only reduced glTF meshes, internally produced physics footage, educational diagrams and site code.
@@ -41,6 +49,9 @@ The owner-enabled Pages site deploys from `main` using `.github/workflows/pages.
 python3 scripts/check_gallery.py
 node --check web/app.js
 node --check web/model-viewer.js
+node --check web/gearbox-viewer.js
+node --check web/gearbox-materials.js
+node --check web/fullscreen.js
 ```
 
 ## Provenance
