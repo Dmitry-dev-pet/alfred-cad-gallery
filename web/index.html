@@ -20,6 +20,7 @@
   }
   </script>
   <script src="./app.js" defer></script>
+  <script src="./fullscreen.js" defer></script>
   <script type="module" src="./model-viewer.js"></script>
   <script type="module" src="./gearbox-viewer.js"></script>
 </head>
@@ -37,6 +38,7 @@
         <a href="#approach" data-ru="Метод" data-en="Approach">Метод</a>
       </nav>
       <div class="header-actions">
+        <a class="portfolio-link" href="https://dmitry-dev-pet.github.io/" aria-label="Каталог всех проектов / Full portfolio" data-ru="Все проекты ↗" data-en="Portfolio ↗">Все проекты ↗</a>
         <button class="language-toggle" type="button" id="languageToggle" aria-label="Switch to English">EN</button>
         <a class="github-link" href="https://github.com/Dmitry-dev-pet/alfred-cad-gallery" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository">GitHub <span aria-hidden="true">↗</span></a>
       </div>
@@ -146,12 +148,14 @@
               <div class="model-toolbar" aria-label="3D gearbox playback controls">
                 <button type="button" class="model-play" disabled aria-pressed="true" data-ru="⏸ Пауза" data-en="⏸ Pause">⏸ Пауза</button>
                 <button type="button" class="model-reset" disabled aria-label="Reset 3D camera" title="Reset view">⟲</button>
+                <button type="button" class="model-material" disabled aria-pressed="true" aria-label="Показать исходные CAD-цвета" data-ru="◈ PBR" data-en="◈ PBR">◈ PBR</button>
+                <button type="button" class="model-fullscreen" aria-pressed="false" aria-label="На весь экран" title="На весь экран">⛶</button>
                 <a href="./credits.html" data-ru="Лицензии ↗" data-en="Credits ↗">Лицензии ↗</a>
               </div>
-              <div class="media-bottom"><span data-ru="3D: вращайте модель, меняйте обороты" data-en="3D: orbit the model, adjust speed">3D: вращайте модель, меняйте обороты</span><span class="play-dot">● GLB</span></div>
+              <div class="media-bottom"><span data-ru="3D · PBR-металл · жесты · полный экран" data-en="3D · PBR metal · gestures · fullscreen">3D · PBR-металл · жесты · полный экран</span><span class="play-dot">● GLB</span></div>
             </div>
             <div class="card-body"><p class="card-eyebrow">MECHANISM / #01</p><h3 data-ru="Двухступенчатый редуктор" data-en="Two-stage gearbox">Двухступенчатый редуктор</h3>
-              <p data-ru="Настоящая геометрия шестерён и валов FreeCAD. Вращайте 3D-сборку и меняйте скорость: выходной вал движется вчетверо медленнее входного." data-en="Real FreeCAD gear and shaft geometry. Orbit the 3D assembly and adjust the speed: the output turns four times slower than the input.">Настоящая геометрия шестерён и валов FreeCAD. Вращайте 3D-сборку и меняйте скорость: выходной вал движется вчетверо медленнее входного.</p>
+              <p data-ru="Настоящие шестерни и валы FreeCAD с реалистичными PBR-материалами. Вращайте 3D-сборку, выбирайте CAD-вид и меняйте обороты входного вала." data-en="Real FreeCAD gear and shaft geometry with physically based materials. Orbit the model, switch to CAD colors, and adjust input shaft RPM.">Настоящие шестерни и валы FreeCAD с реалистичными PBR-материалами. Вращайте 3D-сборку, выбирайте CAD-вид и меняйте обороты входного вала.</p>
               <div class="gearbox-speed-control">
                 <div class="gearbox-speed-label"><label for="gearboxRpm" data-ru="Обороты ведущего вала" data-en="Input shaft speed">Обороты ведущего вала</label><output for="gearboxRpm" id="gearboxRpmOutput" aria-live="polite">60 → 15 об/мин</output></div>
                 <input id="gearboxRpm" type="range" min="10" max="120" step="5" value="60" aria-label="Input shaft revolutions per minute">
@@ -173,6 +177,7 @@
               <div class="model-toolbar" aria-label="3D viewer controls">
                 <button type="button" class="model-play" aria-pressed="true" data-ru="⏸ Пауза" data-en="⏸ Pause">⏸ Пауза</button>
                 <button type="button" class="model-reset" aria-label="Reset 3D camera" title="Reset view">⟲</button>
+                <button type="button" class="model-fullscreen" aria-pressed="false" aria-label="На весь экран" title="На весь экран">⛶</button>
                 <a href="./media/pivot-pendulum.mp4" target="_blank" rel="noopener" data-ru="Видео ↗" data-en="Video ↗">Видео ↗</a>
               </div>
               <div class="media-bottom"><span data-ru="3D: вращайте мышью или пальцем" data-en="3D: drag to rotate, pinch to zoom">3D: вращайте мышью или пальцем</span><span class="play-dot">● GLB</span></div>
@@ -196,6 +201,7 @@
               <div class="model-toolbar" aria-label="3D viewer controls">
                 <button type="button" class="model-play" aria-pressed="true" data-ru="⏸ Пауза" data-en="⏸ Pause">⏸ Пауза</button>
                 <button type="button" class="model-reset" aria-label="Reset 3D camera" title="Reset view">⟲</button>
+                <button type="button" class="model-fullscreen" aria-pressed="false" aria-label="На весь экран" title="На весь экран">⛶</button>
                 <a href="./media/collar-pendulum.mp4" target="_blank" rel="noopener" data-ru="Видео ↗" data-en="Video ↗">Видео ↗</a>
               </div>
               <div class="media-bottom"><span data-ru="3D: вращайте мышью или пальцем" data-en="3D: drag to rotate, pinch to zoom">3D: вращайте мышью или пальцем</span><span class="play-dot">● GLB</span></div>
@@ -251,7 +257,7 @@
         </ol>
       </section>
     </main>
-    <footer class="site-footer"><div><strong>ALFRED<span class="brand-slash">/</span>CAD LAB</strong><p data-ru="Небольшая лаборатория цифровой механики." data-en="A small lab for computational mechanics.">Небольшая лаборатория цифровой механики.</p></div><div><a href="https://github.com/Dmitry-dev-pet/alfred-cad-gallery" target="_blank" rel="noopener noreferrer">SOURCE ↗</a><span>2026 / EXPERIMENTAL</span></div></footer>
+    <footer class="site-footer"><div><strong>ALFRED<span class="brand-slash">/</span>CAD LAB</strong><p data-ru="Небольшая лаборатория цифровой механики." data-en="A small lab for computational mechanics.">Небольшая лаборатория цифровой механики.</p></div><div><a href="https://dmitry-dev-pet.github.io/" data-ru="ВСЕ ПРОЕКТЫ ↗" data-en="PORTFOLIO ↗">ВСЕ ПРОЕКТЫ ↗</a><a href="https://github.com/Dmitry-dev-pet/alfred-cad-gallery" target="_blank" rel="noopener noreferrer">SOURCE ↗</a><span>2026 / EXPERIMENTAL</span></div></footer>
   </div>
 </body>
 </html>
