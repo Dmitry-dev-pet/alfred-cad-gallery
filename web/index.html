@@ -11,7 +11,16 @@
   <title>Alfred CAD Lab — механика в движении</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    }
+  }
+  </script>
   <script src="./app.js" defer></script>
+  <script type="module" src="./model-viewer.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main" data-ru="Перейти к содержимому" data-en="Skip to content">Перейти к содержимому</a>
@@ -138,12 +147,20 @@
           </article>
 
           <article class="project-card" data-category="physics">
-            <div class="card-media video-card-media">
-              <div class="media-marker">002 <span>FREECAD / ORIGINAL FOOTAGE</span></div>
-              <video autoplay muted loop playsinline preload="metadata" poster="./media/pivot-plot.png" aria-label="Анимация трёх физических маятников с различным положением оси">
-                <source src="./media/pivot-pendulum.mp4" type="video/mp4">
-              </video>
-              <div class="media-bottom"><span data-ru="Запись модели FreeCAD" data-en="Captured in FreeCAD">Запись модели FreeCAD</span><span class="play-dot">● REC</span></div>
+            <div class="card-media model-card-media">
+              <div class="media-marker">002 <span>FREECAD / INTERACTIVE GLB</span></div>
+              <div class="model-stage" data-model="rod" aria-label="Interactive Three.js viewer">
+                <div class="viewer-fallback">
+                  <span data-ru="Загружаем настоящую модель FreeCAD…" data-en="Loading the original FreeCAD geometry…">Загружаем настоящую модель FreeCAD…</span>
+                  <a href="./media/pivot-pendulum.mp4" data-ru="Посмотреть видео" data-en="Watch the original video">Посмотреть видео</a>
+                </div>
+              </div>
+              <div class="model-toolbar" aria-label="3D viewer controls">
+                <button type="button" class="model-play" aria-pressed="true" data-ru="⏸ Пауза" data-en="⏸ Pause">⏸ Пауза</button>
+                <button type="button" class="model-reset" aria-label="Reset 3D camera" title="Reset view">⟲</button>
+                <a href="./media/pivot-pendulum.mp4" target="_blank" rel="noopener" data-ru="Видео ↗" data-en="Video ↗">Видео ↗</a>
+              </div>
+              <div class="media-bottom"><span data-ru="3D: вращайте мышью или пальцем" data-en="3D: drag to rotate, pinch to zoom">3D: вращайте мышью или пальцем</span><span class="play-dot">● GLB</span></div>
             </div>
             <div class="card-body"><p class="card-eyebrow">PHYSICS / #02</p><h3 data-ru="Маятник: минимум периода" data-en="Pendulum: minimum period">Маятник: минимум периода</h3>
               <p data-ru="Перемещаем ось вдоль однородного стержня. Находим минимум периода аналитически и сравниваем три движения." data-en="Move the pivot along a uniform rod. Find the analytical minimum and compare three oscillations.">Перемещаем ось вдоль однородного стержня. Находим минимум периода аналитически и сравниваем три движения.</p>
@@ -153,12 +170,20 @@
           </article>
 
           <article class="project-card" data-category="physics">
-            <div class="card-media video-card-media">
-              <div class="media-marker">003 <span>FREECAD / ORIGINAL FOOTAGE</span></div>
-              <video autoplay muted loop playsinline preload="metadata" poster="./media/collar-plot.png" aria-label="Анимация маятников с закреплёнными кольцами в трёх разных положениях">
-                <source src="./media/collar-pendulum.mp4" type="video/mp4">
-              </video>
-              <div class="media-bottom"><span data-ru="Запись модели FreeCAD" data-en="Captured in FreeCAD">Запись модели FreeCAD</span><span class="play-dot">● REC</span></div>
+            <div class="card-media model-card-media">
+              <div class="media-marker">003 <span>FREECAD / INTERACTIVE GLB</span></div>
+              <div class="model-stage" data-model="collar" aria-label="Interactive Three.js viewer">
+                <div class="viewer-fallback">
+                  <span data-ru="Загружаем настоящую модель FreeCAD…" data-en="Loading the original FreeCAD geometry…">Загружаем настоящую модель FreeCAD…</span>
+                  <a href="./media/collar-pendulum.mp4" data-ru="Посмотреть видео" data-en="Watch the original video">Посмотреть видео</a>
+                </div>
+              </div>
+              <div class="model-toolbar" aria-label="3D viewer controls">
+                <button type="button" class="model-play" aria-pressed="true" data-ru="⏸ Пауза" data-en="⏸ Pause">⏸ Пауза</button>
+                <button type="button" class="model-reset" aria-label="Reset 3D camera" title="Reset view">⟲</button>
+                <a href="./media/collar-pendulum.mp4" target="_blank" rel="noopener" data-ru="Видео ↗" data-en="Video ↗">Видео ↗</a>
+              </div>
+              <div class="media-bottom"><span data-ru="3D: вращайте мышью или пальцем" data-en="3D: drag to rotate, pinch to zoom">3D: вращайте мышью или пальцем</span><span class="play-dot">● GLB</span></div>
             </div>
             <div class="card-body"><p class="card-eyebrow">PHYSICS / #03</p><h3 data-ru="Маятник с подвижным грузом" data-en="Pendulum with sliding collar">Маятник с подвижным грузом</h3>
               <p data-ru="Сдвигаем кольцо вдоль стержня и наблюдаем конкуренцию гравитационного плеча и момента инерции." data-en="Slide a collar along the rod and examine the trade-off between gravitational torque and moment of inertia.">Сдвигаем кольцо вдоль стержня и наблюдаем конкуренцию гравитационного плеча и момента инерции.</p>
@@ -172,7 +197,7 @@
       <section class="lab-section section-gap" id="laboratory" aria-labelledby="lab-heading">
         <div class="section-heading">
           <div><span class="section-kicker">02 / PLAY WITH THE PHYSICS</span><h2 id="lab-heading" data-ru="Проверьте расчёт сами" data-en="Try the physics yourself">Проверьте расчёт сами</h2></div>
-          <p data-ru="Двигайте параметры и наблюдайте за периодом. Графики вычисляются прямо в браузере — без сервера и внешних библиотек." data-en="Move the sliders and watch the period change. The curves are computed in your browser — no server or external libraries.">Двигайте параметры и наблюдайте за периодом. Графики вычисляются прямо в браузере — без сервера и внешних библиотек.</p>
+          <p data-ru="Двигайте параметры и наблюдайте за периодом. Графики вычисляются прямо в браузере без сервера; 3D-модели отображаются через Three.js." data-en="Move the sliders and watch the period change. The curves are computed in your browser without a server; 3D models use Three.js.">Двигайте параметры и наблюдайте за периодом. Графики вычисляются прямо в браузере без сервера; 3D-модели отображаются через Three.js.</p>
         </div>
         <div class="lab-grid">
           <article class="lab-panel" id="lab-rod">
