@@ -3,9 +3,9 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
 /*
  * Why this module exists:
- * The original FreeCAD-to-GLB export contains positions + COLOR_0 but NO
- * vertex NORMAL attributes. Lighting-dependent Three.js materials can render
- * all-black on such geometry. We explicitly compute normals on each GLB mesh.
+ * The initial FreeCAD-to-GLB export had positions + COLOR_0 but NO
+ * vertex NORMAL attributes, leading to an all-black render. Export v2 now
+ * embeds NORMAL on every mesh; the viewer recomputes them as a safeguard.
  *
  * This viewer has two independent, always-visible material modes:
  * - Studio: generated grayscale albedo + wear/roughness + bump maps,
@@ -121,8 +121,8 @@ export function addBoxUVs(mesh, scale) {
     throw new Error("Gearbox mesh is missing position data");
   }
 
-  // CRITICAL: The original GLB has no NORMAL attributes at all.
-  // Calculate indexed vertex normals first, before per-face UV expansion.
+  // CRITICAL: the old GLB omitted NORMAL. The new GLB includes NORMAL,
+  // but recalculate normals before per-face UV expansion for robustness.
   // This preserves smoothed cylinder sides and correct lighting.
   geometry = geometry.clone();
   geometry.computeVertexNormals();
