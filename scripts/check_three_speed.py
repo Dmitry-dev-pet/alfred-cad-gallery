@@ -50,9 +50,18 @@ def main():
         assert f'data-step="{phase}"' in page, phase
         assert f"id:'{phase}'" in code, phase
     assert 'shiftStageStatus' in code and 'focusMechanism' in code
+    # Visual shaft markers follow real CAD shaft pivots, not dummy stand-in solids.
+    assert 'id="shaftMarkersToggle"' in page
+    assert "'shaftMarkersToggle'" in code and 'setShaftMarkerVisibility' in code
+    assert "addShaftRotationMarker('InputShaft'" in code
+    assert "addShaftRotationMarker('NativeOutputShaft'" in code
+    assert "pivot.add(group)" in code and "shaftTipProfile(shaft)" in code
+    assert "side.rotation.x=Math.PI*.5" in code
+    assert 'ViewerMarker_' in code and 'CircleGeometry' in code and 'CylinderGeometry' in code
+    assert 'shaft-marker-key' in page
     assert 'three-speed.html' in (WEB/'index.html').read_text()
     assert 'drive.google.com' not in page and 'drive.google.com' not in code
     print(f'PASS: stage-5 FreeCAD GLB: 34 named meshes, {faces} triangles, all 34 normals')
-    print('PASS: 4 FreeCAD solver poses, gear ratios, staged shifts, camera controls, gallery link')
+    print('PASS: 4 FreeCAD poses, gear ratios, staged shifts, shaft markers, gallery link')
 
 if __name__=='__main__':main()
