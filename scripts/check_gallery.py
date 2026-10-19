@@ -27,6 +27,23 @@ EXPECTED = {
 }
 
 
+PBR_ASSETS = {
+    "env/studio-softboxes-1k.hdr": ("ea15dff23437c92d047b6392b7938cd80c82950f76f252084940f81a637dee9e", 351931),
+    "textures/bronze/albedo_1k.jpg": ("41bfa7e7749c68b69064b036581657cbbd9d1a8dc9293464c62edc68f07bc54d", 84435),
+    "textures/bronze/normal_1k.jpg": ("bb1323bcb23ef080ad583ecd92715e7a1f19a8a105f704c0011777db610ad7a9", 138551),
+    "textures/bronze/roughness_1k.jpg": ("2392eea1ae14af4afa36b0430aaf0fd81d2bde6b9bada290fe39235e4c84f0e", 112046),
+    "textures/motor/albedo_1k.jpg": ("e8501d542afa7a449d682ea68420fda73918ca51abc50e4b57158052faa4ffa1", 46834),
+    "textures/motor/normal_1k.jpg": ("a1cddd97bd98438d937440c79f0de499bc048431874619af3ebf8a8c39009145", 178204),
+    "textures/motor/roughness_1k.jpg": ("efa9638a7cceac474fb5c00908f20b61584e5a4f56b4ce1b7556b27346d085b2", 155104),
+    "textures/paint/albedo_2k.jpg": ("a91f3874e5131496e742a89d8c6ef71acfd61ff176d9510ce9cc35adff6b101d", 1451217),
+    "textures/paint/metalness_2k.jpg": ("d3f5d6b6ebcb6acdd539bbf3cd2e5d3ecab7a0f79a6bbc483c746ab7752403fa", 144760),
+    "textures/paint/normal_2k.jpg": ("34b3c61194b96b6337ab70209974c17e477c93fde75ca2be54deddca6376a4d6", 962307),
+    "textures/paint/roughness_2k.jpg": ("670877f1f988fb3a3e3fe34b7d6c2f8fe2376356f96e2926e66d23de5997abb5", 708068),
+    "textures/steel/albedo_1k.jpg": ("c0479dad21330211e001bceff3d2bd62db22d97a30b74824f6b4c630a9b0b908", 93451),
+    "textures/steel/normal_1k.jpg": ("bb1323bcb23ef080ad583ecd92715e7a1f19a8a105f704c0011777db610ad7a9", 138551),
+    "textures/steel/roughness_1k.jpg": ("4ad5b1df00013a37fcb7a829f5348e246754fa4d3376ef134a0e93fadd565f99", 112010),
+}
+
 def check_glb(data: bytes, required: set[str]) -> None:
     assert data[:4] == b"glTF", "invalid binary glTF header"
     version, total_size = struct.unpack_from("<II", data, 4)
@@ -97,6 +114,12 @@ def main() -> None:
         assert len(data) == size, f"size mismatch: {name}"
         assert sha256(data).hexdigest() == digest, f"SHA-256 mismatch: {name}"
 
+    for relative, (digest, size) in PBR_ASSETS.items():
+        payload = (MEDIA / relative).read_bytes()
+        assert len(payload) == size, f"PBR size mismatch: {relative}"
+        assert sha256(payload).hexdigest() == digest, f"PBR checksum mismatch: {relative}"
+    assert (MEDIA / "env" / "studio-softboxes-1k.hdr").read_bytes().startswith(b"#?RADIANCE")
+
     check_glb((MEDIA / "rod-pendulum.glb").read_bytes(),
               {"Rod_NearEnd", "Rod_Optimal", "Rod_NearCentre", "FixedSupport"})
     check_glb((MEDIA / "collar-pendulum.glb").read_bytes(),
@@ -121,9 +144,11 @@ def main() -> None:
     assert 'drive.google.com' not in index
 
     material_code = (ROOT / "web" / "gearbox-materials.js").read_text()
-    assert 'gearbox-frame-worn-blue.jpg' in material_code, 'Missing real frame photo-texture'
-    assert 'new THREE.TextureLoader().load(' in material_code, 'Texture is not applied to actual geometry'
-    assert 'bluePaint.color.set(0xffffff)' in material_code, 'Blue-on-blue map darkening regression'
+    assert 'function installPbrAssets' in material_code, 'Missing real PBR map application'
+    assert 'metalnessMap: "paint/metalness_2k.jpg"' in material_code, 'Chipped-metal mask missing'
+    assert 'normalMap: "steel/normal_1k.jpg"' in material_code
+    assert 'roughnessMap: "bronze/roughness_1k.jpg"' in material_code
+    assert 'material.color.set(tint)' in material_code, 'Albedo multiply bug'
     assert 'function surfaceMaps' in material_code
     assert 'function rng(seed)' in material_code
     assert 'geometry.toNonIndexed()' in material_code
@@ -147,10 +172,17 @@ def main() -> None:
     assert 'color: 0x33627c' in material_code, "blue painted frame lost"
     assert 'color: 0xb57930' in material_code, "bronze gear finish lost"
     assert 'color: 0x2c4852' in material_code, "dark motor finish lost"
-    assert 'toneMappingExposure = 1.03' in viewer_code
-    assert 'finish=20261019-v4' in index, 'Mobile cache-busting viewer URL missing'
+    assert 'toneMappingExposure = 1.12' in viewer_code
+    assert 'new RGBELoader()' in viewer_code, 'Missing HDR reflections'
+    assert 'studio-softboxes-1k.hdr' in viewer_code, 'Missing bundled studio panorama'
+    assert 'renderer.shadowMap.enabled = true' in viewer_code, 'Missing real shadow map'
+    assert 'new THREE.ShadowMaterial' in viewer_code, 'Missing shadow receiver'
+    assert 'finishMode = "photo"' in viewer_code, 'Photo should be the default'
+    assert 'finishMode = { photo:"studio", studio:"cad", cad:"photo" }' in viewer_code
+    assert 'group.rotation.y = phase * ratio' in viewer_code, 'Preserve shaft ratios'
+    assert 'finish=20261019-photo1' in index, 'Mobile cache-busting viewer URL missing'
     assert 'normals=v2' in viewer_code, 'Updated normal-bearing mesh URL not versioned'
-    assert 'new THREE.AmbientLight(0xffffff, .72)' in viewer_code
+    assert 'new THREE.AmbientLight(0xeaf4ff,.33)' in viewer_code
     assert 'finishController.hasGeneratedNormals' in viewer_code
     assert "https://" not in material_code, "Unexpected external texture source"
 
@@ -162,7 +194,7 @@ def main() -> None:
     assert '.model-card-media:fullscreen' in (ROOT / "web" / "styles.css").read_text()
     assert 'importmap' in index and "three@0.180.0" in index
 
-    print("PASS: 8 binary assets have exact source digests")
+    print("PASS: 8 baseline assets and 14 additional PBR/HDR assets match SHA-256")
     print("PASS: all three GLBs preserve expected source components")
     print("PASS: physical periods match source experiments")
     print("PASS: public gearbox is sanitized: 74 meshes, no OEM solids")

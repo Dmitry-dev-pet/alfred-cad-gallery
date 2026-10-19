@@ -30,17 +30,27 @@ The site versions its gearbox renderer, generated material module, image texture
 
 **AI-generated blue painted-frame texture (2026-10-19):** the 320 px tileable JPEG `web/media/gearbox-frame-worn-blue.jpg` is mapped onto the actual `Frame`, `MotorBracket` and `Cover_*` meshes via box-planar UV coordinates, with the original roughness/bump maps retained. No geometry or shaft kinematics are changed. On texture-loading failure, procedural paint remains. A full-resolution creative source is retained in the ChatGPT project output; an optimized copy is archived in private Alfred-CAD Drive.
 
+## Photographic PBR comparison in Three.js (2026-10-19)
+
+The gearbox now defaults to **PHOTO**, with a three-state 📷 PHOTO → ◈ PBR → ▦ CAD button. All 74 public FreeCAD meshes and +1 : −1/2 : +1/4 shaft speed ratios are preserved, and the unlit CAD fallback stays accessible.
+
+New locally shipped assets: a 2K blue industrial coated-metal set (albedo, roughness, normal, chipped-paint metalness), 1K matching texture sets for steel, bronze and motor, plus a self-generated 1K studio **Radiance RGBE HDR**. HDR is an authored softbox environment, not a photograph. PHOTO uses PMREM studio reflections, an anisotropic machining finish, key/fill/rim light, real directional shadow mapping and soft ground/contact shadows. PBR shows the same mapped materials without the heavier shadows, while CAD renders unlit original colors. Actual maps load asynchronously and deterministic procedural maps + RoomEnvironment keep the model visible on slow or unsupported browsers.
+
+The former 320px paint JPEG is retained as historical material; these new 2K/1K maps replace it. The full material-generation script and all mapped images/HDR are backed up in private Google Drive `Alfred-CAD/gearbox-pololu4692/pbr-v1`. Public filenames and content digests are validated in GitHub Actions. There are no external stock textures, material service logins or additional OEM geometry.
+
+**Limitation:** this is an interactive product visualisation using simplified public mechanical geometry and box-projected UVs, not offline path tracing. Some close-up texture seams, hard CAD edges and missing detailed hardware remain visible.
+
 ## Realistic rendering and fullscreen (2026-10-19)
 
 - All **three** 3D scenes have a fullscreen button (⛶). Uses the browser's native Fullscreen API when supported, including Android; a fixed-size CSS viewport fallback works on browsers that reject fullscreen. Escape exits the fallback and native fullscreen offers standard browser exit.
-- The gearbox defaults to a physically based **PBR finish**: powder-coated frame, brushed-steel shafts, polished metal bearings, satin gears and a dark motor housing. The blue painted parts use an **internally AI-generated, optimized seamless JPEG color texture**. Other material finishes and the paint roughness/bump remain procedurally generated in-browser from deterministic seeds. No external material-provider services or commercial texture assets are required.
-- Since source FreeCAD-derived GLBs have **no UV coordinates**, `web/gearbox-materials.js` computes box-planar UVs per triangle before applying subtle color/roughness/bump maps. Soft studio reflections come from a locally generated Three.js RoomEnvironment. Materials never change the mesh geometry or original gear ratios.
-- The **◈ PBR / ▦ CAD** button compares realistic materials with original glTF colors. Renderers resize to the fullscreen container via ResizeObserver.
+- The gearbox defaults to **PHOTO**, using bundled 2K/1K PBR maps and a local studio HDR. The internally generated maps and HDR need no external texture provider or runtime API.
+- Since the source FreeCAD-derived GLB has **no UV coordinates**, `web/gearbox-materials.js` computes box-planar UVs for color/roughness/normal/metalness maps. A local HDR provides the best reflections; RoomEnvironment is the defensive fallback. Materials never change geometry or gear ratios.
+- The **📷 PHOTO / ◈ PBR / ▦ CAD** button compares high-quality studio materials with a faster mode and the original unlit CAD palette. Renderers resize to the fullscreen container via ResizeObserver.
 - **Existing project portfolio is preserved at https://dmitry-dev-pet.github.io/**, in its own repository `Dmitry-dev-pet/dmitry-dev-pet.github.io`. This CAD gallery is the separate subpath `/alfred-cad-gallery/`, and links back to the main portfolio without altering its editorial curation.
 
 ## Storage and publication boundaries
 
-- **Public repository:** only reduced glTF meshes, internally produced physics footage, a generated blue paint finish, educational diagrams and site code.
+- **Public repository:** only reduced glTF meshes, internally produced physics footage, generated PBR/HDR materials, educational diagrams and site code.
 - **Private Google Drive `Alfred-CAD`:** editable `.FCStd`, `.blend`, scripts, archives, third-party components and project snapshots. The GLB copies are retained alongside their original private project folders.
 - **Private Truthrail:** hash manifests, Drive file identifiers and verified restore procedures. These are intentionally not copied into the public gallery.
 - **GitHub Actions:** Pages deployment artifact only (retention 1 day), not permanent storage.
