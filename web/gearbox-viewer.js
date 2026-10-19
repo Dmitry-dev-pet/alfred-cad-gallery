@@ -29,9 +29,11 @@ if (stage) {
   const uvCheck = params.get("uvcheck") === "1";
   const photoScan = !uvCheck && params.get("scan") === "1";
   stage.dataset.scanStatus = photoScan ? "requested" : "off";
+  let scanBanner = null;
   if (photoScan) {
-    const credit = document.createElement('div');
-    credit.textContent = 'PHOTO SCAN · Poly Haven / Rob Tuytel · CC0 · эксперимент';
+    scanBanner = document.createElement('div');
+    const credit = scanBanner;
+    credit.textContent = 'PHOTO SCAN · загрузка фото-карт · Poly Haven / Rob Tuytel · CC0';
     Object.assign(credit.style, {
       position:'absolute', top:'12px', left:'12px', right:'12px',
       zIndex:'4', padding:'7px', background:'rgba(7,22,35,.85)',
@@ -164,7 +166,17 @@ if (stage) {
       if (failed !== undefined) stage.dataset.pbrMapsFailed = String(failed);
       if (total !== undefined) stage.dataset.pbrMapsTotal = String(total);
       if (uvResult) stage.dataset.uvCheck = uvResult;
-      if (scanResult) stage.dataset.scanStatus = scanResult;
+      if (scanResult) {
+        stage.dataset.scanStatus = scanResult;
+        if (scanBanner) {
+          scanBanner.textContent = scanResult === "ready"
+            ? "PHOTO SCAN ✓ · реальная фототекстура Poly Haven · CC0"
+            : scanResult === "fallback"
+              ? "PHOTO SCAN ✕ · загрузка не удалась, показана старая синтетическая текстура"
+              : "PHOTO SCAN · загружаем реальную фототекстуру…";
+          if (scanResult === "fallback") scanBanner.style.color = "#ffc1bb";
+        }
+      }
       if (ready) draw();
     });
     if (uvCheck) stage.dataset.uvCheck = "loading";
