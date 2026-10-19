@@ -41,9 +41,17 @@ def main():
     assert 'GLTFLoader' in code and 'OrbitControls' in code
     page=(WEB/'three-speed.html').read_text()
     assert 'three-speed.js' in page and 'three-speed.css' in page
+    # The step indicators, camera controls and JS must remain wired together.
+    for element_id in ('shiftFlow', 'shiftProgressBar', 'autoFocusToggle', 'cameraMechanism'):
+        assert f'id="{element_id}"' in page, element_id
+        assert f"'{element_id}'" in code, element_id
+    for phase in ('release', 'select', 'align', 'engage'):
+        assert f'data-step="{phase}"' in page, phase
+        assert f"id:'{phase}'" in code, phase
+    assert 'shiftStageStatus' in code and 'focusMechanism' in code
     assert 'three-speed.html' in (WEB/'index.html').read_text()
     assert 'drive.google.com' not in page and 'drive.google.com' not in code
     print(f'PASS: stage-5 FreeCAD GLB: 34 named meshes, {faces} triangles, all 34 normals')
-    print('PASS: 4 FreeCAD solver poses, gear ratios, direct browser controls, gallery link')
+    print('PASS: 4 FreeCAD solver poses, gear ratios, staged shifts, camera controls, gallery link')
 
 if __name__=='__main__':main()
