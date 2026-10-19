@@ -133,6 +133,9 @@ if (stage) {
     // PBR materials include seeded, generated color/roughness/bump maps and
     // per-triangle box UVs. The original GLB colors remain one click away.
     finishController = prepareGearboxFinishes(meshes, scene, renderer);
+    if (!finishController.hasGeneratedNormals || !finishController.hasGeneratedUVs) {
+      throw new Error("Gearbox geometry has missing normals or UV coordinates");
+    }
     finishController.apply(finishMode);
 
     for (const mesh of meshes) {
@@ -166,16 +169,19 @@ if (stage) {
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.10;
+    renderer.toneMappingExposure = 1.28;
     renderer.domElement.setAttribute("aria-label", "3D FreeCAD gearbox with independently rotating shafts");
     renderer.domElement.setAttribute("role", "img");
     stage.appendChild(renderer.domElement);
 
-    scene.add(new THREE.HemisphereLight(0xeafff6, 0x284258, 1.9));
-    const key = new THREE.DirectionalLight(0xf2fff1, 2.6);
+    // Ambient light prevents dark metallic parts when a mobile browser cannot
+    // generate an environment map. Directional lights add shape and shine.
+    scene.add(new THREE.AmbientLight(0xffffff, 1.75));
+    scene.add(new THREE.HemisphereLight(0xeafff6, 0x647989, 2.0));
+    const key = new THREE.DirectionalLight(0xf2fff1, 3.15);
     key.position.set(-.5, 1.1, 1.1);
     scene.add(key);
-    const fill = new THREE.DirectionalLight(0xa6d5e3, 1.0);
+    const fill = new THREE.DirectionalLight(0xd7e9f0, 1.65);
     fill.position.set(.8, -.3, -.9);
     scene.add(fill);
 
@@ -213,7 +219,8 @@ if (stage) {
       if (materialButton) materialButton.disabled = false;
       resize();
       draw();
-    }, undefined, () => {
+    }, undefined, (error) => {
+      console.error("Gearbox GLB could not be loaded", error);
       stage.dataset.error = "true";
       const note = stage.querySelector(".viewer-fallback-note");
       if (note) {
@@ -238,7 +245,8 @@ if (stage) {
       requestAnimationFrame(animate);
     }
     requestAnimationFrame(animate);
-  } catch {
+  } catch (error) {
+    console.error("Gearbox WebGL initialization failed", error);
     stage.dataset.error = "true";
     const note = stage.querySelector(".viewer-fallback-note");
     if (note) note.textContent = "WebGL unavailable — diagram fallback";

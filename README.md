@@ -6,11 +6,19 @@ A public, bilingual **FreeCAD + Blender + physics** gallery hosted with GitHub P
 
 ## Experiments
 
-- **Two-stage gearbox (4:1):** actual geometry of frame, shafts, and CC0 spur gears from our FreeCAD assembly, exported to a **1.13 MB GLB**. 74 public scene meshes include simplified motor/bearing stand-ins; no Pololu OEM CAD solids. Users can orbit, zoom, pause and adjust input shaft rpm. The browser animates the input/middle/output shafts at +1 : −1/2 : +1/4 speed.
+- **Two-stage gearbox (4:1):** actual geometry of frame, shafts, and CC0 spur gears from our FreeCAD assembly, exported to a **1.62 MB GLB**. 74 public scene meshes include simplified motor/bearing stand-ins; no Pololu OEM CAD solids. Users can orbit, zoom, pause and adjust input shaft rpm. The browser animates the input/middle/output shafts at +1 : −1/2 : +1/4 speed.
 - **Physical pendulum:** three genuine FreeCAD models with different pivot locations. Minimum small-angle period **1.180703 s** for a 600 mm homogeneous rod, with pivot **126.794919 mm** from the top.
 - **Sliding-collar pendulum:** three genuine FreeCAD models with different fixed collar positions. Minimum small-angle period **1.0369155 s** at **133.587565 mm** below the pivot.
 
 All three project cards load FreeCAD-derived geometry converted into **GLB (glTF binary)** via **Three.js 0.180.0** with OrbitControls. Each configuration is independently animated in the browser using the physically calculated period; these are not recordings of a live FreeCAD process. The original FreeCAD MP4 videos remain available as fallbacks for the two pendulum experiments.
+
+## Gearbox lighting regression fixed (2026-10-19)
+
+The original public GLB omitted `NORMAL` on **all 74 meshes**, so both Studio PBR and CAD modes could display as an all-black silhouette. A live public-browser test confirmed the defect (even though CI previously passed); button changes alone are not a visual test.
+
+The replacement `web/media/gearbox-public.glb` is a **v2 export** with 74/74 `NORMAL` attributes, validated nonzero unit-length vectors, unchanged geometry and original source restrictions. Version 1 remains available in Git history and private archival storage.
+
+Rendering now additionally recomputes normals defensively, reduces metallic reflectance so fallback diffuse lighting still works, introduces explicit ambient light and subtle emissive fill, provides high-contrast, lower-frequency generated industrial texture grain, and uses a lighting-independent (`MeshBasicMaterial`) CAD-colors mode. A missing optional environment map must never black out the models. CI verifies the normal attributes and shading safeguards, but a real in-browser visual test is also required.
 
 ## Realistic rendering and fullscreen (2026-10-19)
 
@@ -60,7 +68,7 @@ The original FreeCAD models and MP4s were produced on 2026-10-18 as part of Alfr
 
 ## Public gearbox: source rights and disclosure
 
-The public `web/media/gearbox-public.glb` consists of 74 render meshes (sha256 `490ed7e58b5d1dae470123a222fd5e953342552092e8917d3f688fbaba1f1386`). It has been stripped of `Pololu4692Case` and `Pololu4692Dshaft` exact OEM geometry, as well as the imported bearing/screw solids from the private FreeCAD assembly. The motor is represented by two generic cylinders and the bearings by simplified rings. The original editable `.FCStd`, STEP, Blender and recovery files remain private.
+The public `web/media/gearbox-public.glb` consists of 74 render meshes (sha256 `d5ff603a1f792bd1eef350d5eb502d83a67a366303652311b69a5ee5359e4685`). It has been stripped of `Pololu4692Case` and `Pololu4692Dshaft` exact OEM geometry, as well as the imported bearing/screw solids from the private FreeCAD assembly. The motor is represented by two generic cylinders and the bearings by simplified rings. The original editable `.FCStd`, STEP, Blender and recovery files remain private.
 
 The modified 20/40-tooth spur gear geometry originated from Innerscene's CC0 library. We explicitly acknowledge those sources in the public [credits page](web/credits.html). The private assembly also used FreeCAD Library CC BY 3.0 components; those original source assets are excluded from the public GLB, and their provenance and license are still documented on that credits page. This is an illustrative kinematic scene, not manufacturing data or evidence of manufacturer endorsement.
 
