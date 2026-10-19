@@ -58,6 +58,7 @@ def main():
     assert "pivot.add(group)" in code and "shaftTipProfile(shaft)" in code
     assert "side.rotation.x=Math.PI*.5" in code
     assert 'ViewerMarker_' in code and 'CircleGeometry' in code and 'CylinderGeometry' in code
+    assert 'MarkerRotorAsymmetric' in code and 'ExtrudeGeometry' in code
     assert 'shaft-marker-key' in page
     assert 'three-speed.html' in (WEB/'index.html').read_text()
     assert 'drive.google.com' not in page and 'drive.google.com' not in code
