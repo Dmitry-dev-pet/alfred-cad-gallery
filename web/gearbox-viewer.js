@@ -169,19 +169,19 @@ if (stage) {
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.28;
+    renderer.toneMappingExposure = 1.03;
     renderer.domElement.setAttribute("aria-label", "3D FreeCAD gearbox with independently rotating shafts");
     renderer.domElement.setAttribute("role", "img");
     stage.appendChild(renderer.domElement);
 
     // Ambient light prevents dark metallic parts when a mobile browser cannot
     // generate an environment map. Directional lights add shape and shine.
-    scene.add(new THREE.AmbientLight(0xffffff, 1.75));
-    scene.add(new THREE.HemisphereLight(0xeafff6, 0x647989, 2.0));
-    const key = new THREE.DirectionalLight(0xf2fff1, 3.15);
+    scene.add(new THREE.AmbientLight(0xffffff, .72));
+    scene.add(new THREE.HemisphereLight(0xeafff6, 0x647989, 1.05));
+    const key = new THREE.DirectionalLight(0xffefd9, 2.0);
     key.position.set(-.5, 1.1, 1.1);
     scene.add(key);
-    const fill = new THREE.DirectionalLight(0xd7e9f0, 1.65);
+    const fill = new THREE.DirectionalLight(0xcde8f9, .85);
     fill.position.set(.8, -.3, -.9);
     scene.add(fill);
 
