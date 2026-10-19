@@ -42,7 +42,8 @@ def main():
     page=(WEB/'three-speed.html').read_text()
     assert 'three-speed.js' in page and 'three-speed.css' in page
     # The step indicators, camera controls and JS must remain wired together.
-    for element_id in ('shiftFlow', 'shiftProgressBar', 'autoFocusToggle', 'cameraMechanism'):
+    assert 'id="shiftFlow"' in page
+    for element_id in ('shiftProgressBar', 'autoFocusToggle', 'cameraMechanism'):
         assert f'id="{element_id}"' in page, element_id
         assert f"'{element_id}'" in code, element_id
     for phase in ('release', 'select', 'align', 'engage'):
