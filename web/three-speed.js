@@ -369,11 +369,31 @@ function onPointerUp(e) {
   }
 }
 let pointerDrag=false,downPoint=null;
-renderer.domElement.addEventListener('pointerdown',e=>{pointerDrag=false;downPoint={x:e.clientX,y:e.clientY};});
+renderer.domElement.addEventListener('pointerdown',e=>{cameraFlight=null;pointerDrag=false;downPoint={x:e.clientX,y:e.clientY};});
 renderer.domElement.addEventListener('pointermove',e=>{if(downPoint&&Math.hypot(e.clientX-downPoint.x,e.clientY-downPoint.y)>6)pointerDrag=true;});
 renderer.domElement.addEventListener('pointerup',e=>{onPointerUp(e);downPoint=null;});
-function resetCamera(){camera.position.copy(cameraStart);controls.target.copy(lookAt);controls.update();}
+function flyCamera(toPosition,toTarget) {
+  cameraFlight={
+    fromPosition:camera.position.clone(),fromTarget:controls.target.clone(),
+    toPosition,toTarget,elapsed:0,duration:.85
+  };
+}
+function focusMechanism(g) {
+  const target=new THREE.Vector3(11,40,g===3?67:34);
+  flyCamera(target.clone().add(new THREE.Vector3(140,-135,105)),target);
+}
+function updateCameraFlight(dt) {
+  if(!cameraFlight)return;
+  const flight=cameraFlight;
+  flight.elapsed+=dt;
+  const f=phase(flight.elapsed/flight.duration);
+  camera.position.lerpVectors(flight.fromPosition,flight.toPosition,f);
+  controls.target.lerpVectors(flight.fromTarget,flight.toTarget,f);
+  if(f>=1)cameraFlight=null;
+}
+function resetCamera(){cameraFlight=null;camera.position.copy(cameraStart);controls.target.copy(lookAt);controls.update();}
 $('cameraReset').addEventListener('click',resetCamera);
+$('cameraMechanism').addEventListener('click',()=>focusMechanism(transition?.to||gear||1));
 $('fullscreen').addEventListener('click',async()=>{
   if(document.fullscreenElement){await document.exitFullscreen().catch(()=>{});return;}
   await viewport.requestFullscreen?.().catch(()=>setStatus('Полноэкранный режим не поддерживается этим браузером.'));
@@ -403,6 +423,7 @@ function animate(){
     }
     applyRotation();
   }
+  updateCameraFlight(dt);
   controls.update();renderer.render(scene,camera);
 }
 resize();animate();
@@ -431,7 +452,7 @@ try{
   applyLever(currentLeverPose);applyTravel();applyRotation();setGuideVisibility();setXray();highlight();
   $('loading').classList.add('hidden');
   $('renderStatus').textContent='34 CAD-детали · 51 534 треугольника';
-  ready=true;updateButtons();
+  ready=true;updateButtons();updateShiftFlow();
   setStatus('Вращается ведущий вал. Выберите 1, 2 или 3: коробка остановится и переключится автоматически.');
   resize();
 }catch(err){
