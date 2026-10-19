@@ -35,6 +35,15 @@ def main():
         assert f'id="{name}"' in html, name
     for symbol in ['GLTFLoader','OrbitControls','FanRotor','HeaterEnvelope','temperature','conductance','requestAnimationFrame','Math.sqrt']:
         assert symbol in js,symbol
+    assert 'computeVertexNormals()' in js, 'Missing normal fallback for original CAD'
+    assert 'if(world && !params.paused)' in js, 'Pause must freeze rotor and air particles'
+    assert '.stage:fullscreen' in (WEB/'fan-lab.css').read_text()
+    home=(WEB/'index.html').read_text()
+    assert 'THERMOPHYSICS / #04' in home and 'href="./fan-lab.html"' in home
+    assert 'Все / 04' in home and 'Физика / 03' in home
+    thumbnail=(WEB/'media/fan-cooling-card.webp').read_bytes()
+    assert len(thumbnail)==30610
+    assert hashlib.sha256(thumbnail).hexdigest()=='da5be44dc4a833d681a80e84a51f12b9f7bc8cfbc6ae3a43d0ec80c9e731fa41'
     assert 'https://cdn.jsdelivr.net/npm/three@0.180.0' in html
     assert 'Не подтверждён' not in html or 'учебн' in html
     # Direct test of the educational heat equation parameters.

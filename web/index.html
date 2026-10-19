@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#091321">
   <meta name="description" content="Alfred CAD Lab — FreeCAD, Blender и эксперименты по механике. Публичная витрина исследований и интерактивных расчётов.">
   <meta property="og:title" content="Alfred CAD Lab — механика в движении">
-  <meta property="og:description" content="Редуктор, маятник с оптимальной осью и маятник с подвижным грузом. Настоящие анимации FreeCAD и интерактивные графики.">
+  <meta property="og:description" content="Редуктор, маятники и интерактивная система охлаждения: настоящая CAD-геометрия FreeCAD, физические модели и управление в браузере.">
   <meta property="og:type" content="website">
   <title>Alfred CAD Lab — механика в движении</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
@@ -55,7 +55,7 @@
             <a class="text-button" href="./fan-lab.html" data-ru="🌬 Интерактивный вентилятор ↗" data-en="🌬 Interactive cooling lab ↗">🌬 Интерактивный вентилятор ↗</a>
           <a class="text-button" href="#laboratory"><span data-ru="Изменить параметры" data-en="Adjust parameters">Изменить параметры</span> ↓</a>
           </div>
-          <div class="hero-footnote"><span class="tiny-line"></span><span data-ru="Три проекта. Две среды 3D. Одна исследовательская лаборатория." data-en="Three projects. Two 3D engines. One experimental laboratory.">Три проекта. Две среды 3D. Одна исследовательская лаборатория.</span></div>
+          <div class="hero-footnote"><span class="tiny-line"></span><span data-ru="Четыре проекта. Две среды 3D. Одна исследовательская лаборатория." data-en="Four projects. Two 3D engines. One experimental laboratory.">Четыре проекта. Две среды 3D. Одна исследовательская лаборатория.</span></div>
         </div>
         <div class="hero-machine" role="img" aria-label="Декоративная схема вращающихся шестерён, не инженерный чертёж">
           <div class="machine-background"></div>
@@ -103,7 +103,7 @@
       </section>
 
       <section class="stats" aria-label="Lab at a glance">
-        <div><strong>03</strong><span data-ru="эксперимента" data-en="experiments">эксперимента</span></div>
+        <div><strong>04</strong><span data-ru="эксперимента" data-en="experiments">эксперимента</span></div>
         <div><strong>02</strong><span data-ru="3D-среды" data-en="3D engines">3D-среды</span></div>
         <div><strong>01</strong><span data-ru="общий подход" data-en="method">общий подход</span></div>
         <p class="stats-aside">FREECAD <span>×</span> BLENDER <span>×</span> PHYSICS</p>
@@ -115,9 +115,9 @@
           <p data-ru="Не рендер ради рендера: у каждой сцены есть модель, гипотеза и проверяемый результат." data-en="Not visuals for their own sake: each scene starts with a model, a hypothesis, and a testable result.">Не рендер ради рендера: у каждой сцены есть модель, гипотеза и проверяемый результат.</p>
         </div>
         <div class="filter-bar" role="group" aria-label="Project filters">
-          <button type="button" class="filter-button active" aria-pressed="true" data-filter="all" data-ru="Все / 03" data-en="All / 03">Все / 03</button>
+          <button type="button" class="filter-button active" aria-pressed="true" data-filter="all" data-ru="Все / 04" data-en="All / 04">Все / 04</button>
           <button type="button" class="filter-button" aria-pressed="false" data-filter="mechanics" data-ru="Механизмы / 01" data-en="Mechanisms / 01">Механизмы / 01</button>
-          <button type="button" class="filter-button" aria-pressed="false" data-filter="physics" data-ru="Физика / 02" data-en="Physics / 02">Физика / 02</button>
+          <button type="button" class="filter-button" aria-pressed="false" data-filter="physics" data-ru="Физика / 03" data-en="Physics / 03">Физика / 03</button>
         </div>
 
         <div class="project-grid">
@@ -211,6 +211,19 @@
               <p data-ru="Сдвигаем кольцо вдоль стержня и наблюдаем конкуренцию гравитационного плеча и момента инерции." data-en="Slide a collar along the rod and examine the trade-off between gravitational torque and moment of inertia.">Сдвигаем кольцо вдоль стержня и наблюдаем конкуренцию гравитационного плеча и момента инерции.</p>
               <div class="tag-list"><span>FreeCAD</span><span>Optimization</span><span>1.0369 s</span></div>
               <a class="card-link" href="#lab-collar"><span data-ru="Открыть интерактивный расчёт" data-en="Explore the interactive calculation">Открыть интерактивный расчёт</span><span aria-hidden="true">↗</span></a>
+            </div>
+          </article>
+          <article class="project-card" data-category="physics">
+            <a class="card-media fan-card-media" href="./fan-lab.html" aria-label="Открыть интерактивную систему охлаждения">
+              <div class="media-marker">004 <span>FREECAD / INTERACTIVE 3D</span></div>
+              <img src="./media/fan-cooling-card.webp" width="702" height="520" loading="lazy" decoding="async" alt="Настоящая CAD-сборка осевого вентилятора, радиатора и воздуховода из FreeCAD">
+              <div class="media-bottom"><span data-ru="Регулировка оборотов · воздуховод · нагрев" data-en="RPM control · duct · heating">Регулировка оборотов · воздуховод · нагрев</span><span class="play-dot">● LIVE 3D</span></div>
+            </a>
+            <div class="card-body"><p class="card-eyebrow">THERMOPHYSICS / #04</p>
+              <h3 data-ru="Система охлаждения" data-en="Interactive cooling system">Система охлаждения</h3>
+              <p data-ru="Две настоящие CAD-сборки. Меняйте скорость вентилятора, управляйте временем эксперимента и переключайте воздуховод. Температура — учебная физическая модель." data-en="Two real CAD assemblies. Control fan RPM, experiment time and the air duct. Temperature follows a clearly labelled educational model.">Две настоящие CAD-сборки. Меняйте скорость вентилятора, управляйте временем эксперимента и переключайте воздуховод. Температура — учебная физическая модель.</p>
+              <div class="tag-list"><span>FreeCAD</span><span>Three.js</span><span>40 W</span><span>Live 3D</span></div>
+              <a class="card-link" href="./fan-lab.html"><span data-ru="Открыть управляемую 3D-лабораторию" data-en="Launch the interactive 3D lab">Открыть управляемую 3D-лабораторию</span><span aria-hidden="true">↗</span></a>
             </div>
           </article>
         </div>

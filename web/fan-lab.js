@@ -112,6 +112,8 @@ function updateParticles(cloud,dt){
 function normalizeMaterial(root){
   root.traverse(child=>{
     if(!child.isMesh)return;
+    // STEP-derived glTF may omit NORMAL attributes; avoid dark/black PBR faces.
+    if (!child.geometry.getAttribute('normal')) child.geometry.computeVertexNormals();
     child.material=child.material.clone();
     child.material.side=THREE.DoubleSide;
     child.material.roughness=.65;
@@ -214,7 +216,7 @@ function frame(){
   requestAnimationFrame(frame);
   const dt=Math.min(.1,timer.getDelta());
   if(!params.paused&&params.minute<END_MIN){params.minute=Math.min(END_MIN,params.minute+dt*params.playback*SIM_SECONDS_PER_WALL_SECOND/60);if(Math.round(params.minute*20)!==Math.round((params.minute-dt*params.playback*SIM_SECONDS_PER_WALL_SECOND/60)*20)||params.minute===END_MIN)updateLabels();}
-  if(world){for(const o of world){o.pivot.rotation.z+=params.rpm/60*Math.PI*2*dt;updateParticles(o.clouds,dt);}}
+  if(world && !params.paused){for(const o of world){o.pivot.rotation.z+=params.rpm/60*Math.PI*2*dt;updateParticles(o.clouds,dt);}}
   orbit.update();renderer.render(scene,camera);
 }
 measure();updateLabels();frame();

@@ -276,3 +276,9 @@ body.viewer-open{overflow:hidden!important}
   .header-actions .github-link span{font-size:18px}
   .site-footer>div:last-child{justify-content:flex-start;gap:22px}
 }
+
+/* FreeCAD-derived fan/heatsink thumbnail for fourth experiment. */
+.fan-card-media{display:block;position:relative;background:#152e39}
+.fan-card-media img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 53%;transition:transform .35s ease}
+.fan-card-media:hover img{transform:scale(1.055)}
+@media(prefers-reduced-motion:reduce){.fan-card-media img{transition:none}}
