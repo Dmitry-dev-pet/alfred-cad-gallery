@@ -7,7 +7,7 @@
   <meta name="description" content="Интерактивная трёхступенчатая коробка передач из FreeCAD: две оси, три пары шестерён, вилки, муфты и механическая блокировка. Three.js 3D.">
   <title>Трёхступенчатая КПП — Alfred CAD Lab</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./three-speed.css?v=20261019-2">
+  <link rel="stylesheet" href="./three-speed.css?v=20261019-3">
   <script type="importmap">
   {"imports":{
     "three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
@@ -71,18 +71,20 @@
         <div class="section-rule"></div>
         <h3>Отображение</h3>
         <label class="option"><input id="xrayToggle" type="checkbox"><span>Прозрачные шестерни</span></label>
+        <label class="option"><input id="shaftMarkersToggle" type="checkbox" checked><span>Метки вращения валов</span></label>
+        <div class="shaft-marker-key" aria-label="Цвета маркеров вращения"><span><i class="shaft-swatch input"></i> Входной вал</span><span><i class="shaft-swatch output"></i> Выходной вал</span></div>
         <label class="option"><input id="autoFocusToggle" type="checkbox" checked><span>Приближать механизм при переключении</span></label>
         <label class="option"><input id="hardwareToggle" type="checkbox" checked><span>Направляющие и H-кулиса</span></label>
         <div class="hint-box" role="status" id="statusText">Модель загружается.</div>
       </aside>
     </div>
     <section class="under-grid" aria-label="Устройство коробки">
-      <div class="info-panel"><span class="number">01 / ПОСТОЯННОЕ ЗАЦЕПЛЕНИЕ</span><h3>Три пары шестерён</h3><p>18:42, 24:36 и 30:30 зубьев. Все три пары вращаются одновременно, даже в нейтрали.</p></div>
+      <div class="info-panel"><span class="number">01 / ПОСТОЯННОЕ ЗАЦЕПЛЕНИЕ</span><h3>Три пары шестерён</h3><p>18:42, 24:36 и 30:30 зубьев. Все три пары вращаются одновременно, даже в нейтрали. Цветные асимметричные метки показывают, как движутся два вала: на нейтрали ведомый неподвижен.</p></div>
       <div class="info-panel"><span class="number">02 / МЕХАНИЗМ ВЫБОРА</span><h3>Две муфты и вилки</h3><p>Муфта фиксирует выбранную свободно вращающуюся шестерню на ведомом валу. Ход штоков ±3 мм.</p></div>
       <div class="info-panel"><span class="number">03 / ЗАЩИТА</span><h3>Межштоковая блокировка</h3><p>Поперечный палец геометрически исключает одновременное включение передач с разных штоков.</p></div>
     </section>
-    <footer class="disclaimer">Демонстрационная кинематика из модели FreeCAD 1.1.4, этап 5. При переключении движение намеренно замедлено: вводится остановка и фазовое выравнивание кулачков. Three.js не вычисляет контактные силы, трение или динамику сцепления. Проверки CAD не являются сертификатом промышленной безопасности. <a href="./index.html#projects">Вернуться в галерею ↗</a></footer>
+    <footer class="disclaimer">Демонстрационная кинематика из модели FreeCAD 1.1.4, этап 5. Метки валов — только визуальные накладки Three.js, их нет в экспортированной геометрии FreeCAD. При переключении движение намеренно замедлено: вводится остановка и фазовое выравнивание кулачков. Three.js не вычисляет контактные силы, трение или динамику сцепления. Проверки CAD не являются сертификатом промышленной безопасности. <a href="./index.html#projects">Вернуться в галерею ↗</a></footer>
   </main>
-  <script type="module" src="./three-speed.js?v=20261019-2"></script>
+  <script type="module" src="./three-speed.js?v=20261019-3"></script>
 </body>
 </html>
