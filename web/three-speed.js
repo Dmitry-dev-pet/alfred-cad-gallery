@@ -207,6 +207,37 @@ function addShaftRotationMarker(name,color) {
   // A short longitudinal paint-like stripe follows the same shaft pivot.
   // The end radius comes from the imported FreeCAD vertices, not a guessed
   // diameter. Its short span avoids drawing over the whole gearbox.
+  // Two unequal blades make angular motion obvious even without the end stripe.
+  // These are demonstration flags outside the gear zone, not machined CAD teeth.
+  const rotorZ=top+Math.max(1.4,radius*.28);
+  const blades=new THREE.Shape();
+  const longArm=radius*2.8;
+  const shortArm=radius*1.35;
+  const halfWidth=Math.max(.8,radius*.28);
+  blades.moveTo(-shortArm,-halfWidth*.67);
+  blades.lineTo(-radius*.52,-halfWidth);
+  blades.lineTo(radius*.35,-halfWidth);
+  blades.lineTo(longArm*.77,-halfWidth*1.2);
+  blades.lineTo(longArm,0);
+  blades.lineTo(longArm*.77,halfWidth*1.2);
+  blades.lineTo(radius*.35,halfWidth);
+  blades.lineTo(-radius*.52,halfWidth);
+  blades.lineTo(-shortArm,halfWidth*.67);
+  blades.closePath();
+  const rotor=addOverlay(
+    new THREE.ExtrudeGeometry(blades,{depth:Math.max(.55,radius*.13),bevelEnabled:false,steps:1}),
+    material,rotorZ,'MarkerRotorAsymmetric');
+  rotor.renderOrder=2;
+  const hub=addOverlay(
+    new THREE.CylinderGeometry(radius*.46,radius*.46,Math.max(.65,radius*.2),24),
+    outline,rotorZ,'MarkerRotorHub');
+  hub.rotation.x=Math.PI*.5;
+  hub.position.z=rotorZ+Math.max(.28,radius*.07);
+  // Mark the longer blade; no visual symmetry can hide 180-degree rotation.
+  const accent=addOverlay(
+    new THREE.CircleGeometry(Math.max(.55,radius*.18),16),
+    outline,rotorZ+Math.max(.6,radius*.15),'MarkerRotorTip');
+  accent.position.x=longArm*.76;
   const stripeLength=Math.min(15,span*.14);
   if(stripeLength>1) {
     const side=addOverlay(
