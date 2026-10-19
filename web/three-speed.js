@@ -138,7 +138,7 @@ function setPivot(name,x,y,z=0) {
 function shaftTipProfile(mesh) {
   const geometry=mesh.geometry;
   const positions=geometry.getAttribute('position');
-  if(!positions)throw new Error('Нет вершин у вала '+mesh.name);
+  if(!positions)return null;
   geometry.computeBoundingBox();
   mesh.updateMatrix();
   const bounds=geometry.boundingBox.clone().applyMatrix4(mesh.matrix);
@@ -153,15 +153,19 @@ function shaftTipProfile(mesh) {
   }
   // A pointed or bevelled last vertex may not define an end-face radius.
   if(radius<.5)radius=Math.min(bounds.max.x-bounds.min.x,bounds.max.y-bounds.min.y)*.5;
-  if(!Number.isFinite(radius)||radius<.5||!Number.isFinite(span)||span<=0)
-    throw new Error('Некорректная геометрия вала '+mesh.name);
+  if(!Number.isFinite(radius)||radius<.5||!Number.isFinite(span)||span<=0)return null;
   return {top,span,radius};
 }
 function addShaftRotationMarker(name,color) {
   const shaft=parts[name];
   const pivot=rotNodes.get(name);
-  if(!shaft||!pivot)throw new Error('Нет вала для метки '+name);
-  const {top,span,radius}=shaftTipProfile(shaft);
+  if(!shaft||!pivot)return;
+  const profile=shaftTipProfile(shaft);
+  if(!profile){
+    console.warn('Rotation marker unavailable for CAD shaft',name);
+    return; // A visual aid must never prevent the original CAD scene loading.
+  }
+  const {top,span,radius}=profile;
   const offset=Math.max(.05,radius*.018);
   const faceZ=top+offset;
   const material=new THREE.MeshBasicMaterial({
