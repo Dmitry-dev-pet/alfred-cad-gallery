@@ -214,13 +214,71 @@ function installPbrAssets(categories, renderer, onAssetsUpdated) {
   return progress;
 }
 
+// Explicitly opt-in to the CC0 photographed Poly Haven material. This is a
+// third-party live-CDN preview, not an offline asset of our self-contained site.
+// The photographed source was a 2.5 metre-wide painted gate; the source image
+// contains vertical structural seams unsuitable for a 210 mm gearbox, so the
+// SAME seam-free centre crop is used for albedo, roughness and normal.
+// All scans are first DOWNsampled to a small 256px tile, rather than falsely
+// upscaling an AI image to 2K. Failure leaves the previous local material.
+function loadPhotographedPaint(material, onAssetsUpdated) {
+  const root = 'https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/blue_metal_plate/';
+  const files = {
+    map: 'blue_metal_plate_diff_1k.jpg',
+    roughnessMap: 'blue_metal_plate_rough_1k.jpg',
+    normalMap: 'blue_metal_plate_nor_gl_1k.jpg',
+  };
+  onAssetsUpdated?.({ photoScan: 'loading' });
+  const loader = new THREE.ImageLoader();
+  loader.setCrossOrigin('anonymous');
+  const tasks = Object.entries(files).map(([slot, filename]) => new Promise((resolve, reject) => {
+    loader.load(root + filename, image => {
+      try {
+        // A central section avoids the original gate panel borders.
+        const canvas = document.createElement('canvas');
+        canvas.width = canvas.height = 256;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error('Canvas texture cropping not supported');
+        const crop = Math.floor(Math.min(image.width, image.height) * .30);
+        ctx.drawImage(image, Math.floor((image.width-crop)/2),
+          Math.floor((image.height-crop)/2), crop, crop, 0, 0, 256, 256);
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.colorSpace = slot === 'map' ? THREE.SRGBColorSpace : THREE.NoColorSpace;
+        texture.wrapS = texture.wrapT = THREE.MirroredRepeatWrapping;
+        texture.anisotropy = 8;
+        texture.minFilter = THREE.LinearMipmapLinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        resolve([slot, texture]);
+      } catch (e) { reject(e); }
+    }, undefined, reject);
+  }));
+  Promise.all(tasks).then(pairs => {
+    // Atomic swap: never combine one photographed map with two old generated maps.
+    for (const [slot, tex] of pairs) material[slot] = tex;
+    material.color.set(0xffffff);
+    material.metalness = .04; // painted film is a dielectric
+    material.roughness = .92;
+    material.clearcoat = .12;
+    material.normalScale.set(.22, .22);
+    material.bumpMap = null;
+    material.bumpScale = 0;
+    material.needsUpdate = true;
+    onAssetsUpdated?.({ photoScan: 'ready' });
+  }).catch(error => {
+    console.warn('Poly Haven photo scan unavailable, using bundled paint', error);
+    onAssetsUpdated?.({ photoScan: 'fallback' });
+  });
+}
+
 export function prepareGearboxFinishes(meshes, scene, renderer, onAssetsUpdated) {
   const originals = new WeakMap();
   const prepared = new WeakMap();
   const categories = new Map();
   // Opt-in UV test paints ONLY the blue structural parts. It is deliberately
   // unlit, so lighting/HDR cannot hide or counterfeit the texture projection.
-  const uvCheckEnabled = new URLSearchParams(window.location.search).get("uvcheck") === "1";
+  const params = new URLSearchParams(window.location.search);
+  const uvCheckEnabled = params.get("uvcheck") === "1";
+  const photoScanRequested = !uvCheckEnabled && params.get("scan") === "1";
   const uvMap = uvCheckEnabled ? new THREE.TextureLoader().load(
     new URL("./media/debug/uv-checker-512.png?grid=20261019-uv1", import.meta.url).href,
     () => onAssetsUpdated?.({ uvCheck: "ready" }),
@@ -292,7 +350,18 @@ export function prepareGearboxFinishes(meshes, scene, renderer, onAssetsUpdated)
     console.warn("Room reflections unavailable; using direct lights", err);
   }
 
-  const progress = installPbrAssets(categories, renderer, onAssetsUpdated);
+  // Original PBR maps load first. The opt-in photographed set replaces ALL
+  // three paint channels only once all local texture loads have settled.
+  let scanned = false;
+  const report = progressUpdate => {
+    onAssetsUpdated?.(progressUpdate);
+    if (!photoScanRequested || scanned || progressUpdate.loaded === undefined) return;
+    if (progressUpdate.loaded + progressUpdate.failed < progressUpdate.total) return;
+    scanned = true;
+    loadPhotographedPaint(categories.get('paint'), onAssetsUpdated);
+  };
+  const progress = installPbrAssets(categories, renderer, report);
+  if (photoScanRequested) onAssetsUpdated?.({ photoScan: 'waiting-for-local-pbr' });
   return {
     apply(mode) {
       for (const mesh of meshes) {

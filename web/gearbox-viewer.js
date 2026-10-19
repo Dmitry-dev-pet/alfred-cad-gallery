@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
-import { prepareGearboxFinishes } from "./gearbox-materials.js?finish=20261019-uv1";
+import { prepareGearboxFinishes } from "./gearbox-materials.js?finish=20261019-scan1";
 
 // Public 74-part mesh comes from FreeCAD, with OEM solids removed. The input,
 // middle and output groups have verified ratios +1 : -1/2 : +1/4.
@@ -25,7 +25,20 @@ if (stage) {
   let renderer, controls, scene, camera, shafts, finishController;
   let key, shadowReceiver, contactShadow;
   let finishMode = "photo"; // the highest quality is the public default
-  const uvCheck = new URLSearchParams(window.location.search).get("uvcheck") === "1";
+  const params = new URLSearchParams(window.location.search);
+  const uvCheck = params.get("uvcheck") === "1";
+  const photoScan = !uvCheck && params.get("scan") === "1";
+  stage.dataset.scanStatus = photoScan ? "requested" : "off";
+  if (photoScan) {
+    const credit = document.createElement('div');
+    credit.textContent = 'PHOTO SCAN · Poly Haven / Rob Tuytel · CC0 · эксперимент';
+    Object.assign(credit.style, {
+      position:'absolute', top:'12px', left:'12px', right:'12px',
+      zIndex:'4', padding:'7px', background:'rgba(7,22,35,.85)',
+      color:'#fff', fontSize:'12px', fontWeight:'700', pointerEvents:'none'
+    });
+    stage.appendChild(credit);
+  }
   stage.dataset.uvCheck = uvCheck ? "requested" : "off";
   if (uvCheck) {
     const legend = document.createElement("div");
@@ -146,11 +159,12 @@ if (stage) {
       groups.set(meta.id, { group, ratio: meta.ratio });
     }
     model.updateMatrixWorld(true);
-    finishController = prepareGearboxFinishes(meshes, scene, renderer, ({ loaded, failed, total, uvCheck: uvResult }) => {
+    finishController = prepareGearboxFinishes(meshes, scene, renderer, ({ loaded, failed, total, uvCheck: uvResult, photoScan: scanResult }) => {
       if (loaded !== undefined) stage.dataset.pbrMapsLoaded = String(loaded);
       if (failed !== undefined) stage.dataset.pbrMapsFailed = String(failed);
       if (total !== undefined) stage.dataset.pbrMapsTotal = String(total);
       if (uvResult) stage.dataset.uvCheck = uvResult;
+      if (scanResult) stage.dataset.scanStatus = scanResult;
       if (ready) draw();
     });
     if (uvCheck) stage.dataset.uvCheck = "loading";

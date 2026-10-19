@@ -187,11 +187,17 @@ def main() -> None:
     assert '80 мм/повтор' in viewer_code, "Missing physical scale UV legend"
     assert 'finishMode = { photo:"studio", studio:"cad", cad:"photo" }' in viewer_code
     assert 'group.rotation.y = phase * ratio' in viewer_code, 'Preserve shaft ratios'
-    assert 'finish=20261019-uv1' in index, 'Mobile cache-busting viewer URL missing'
+    assert 'finish=20261019-scan1' in index, 'Mobile cache-busting viewer URL missing'
     assert 'normals=v2' in viewer_code, 'Updated normal-bearing mesh URL not versioned'
     assert 'new THREE.AmbientLight(0xeaf4ff,.33)' in viewer_code
     assert 'finishController.hasGeneratedNormals' in viewer_code
-    assert "https://" not in material_code, "Unexpected external texture source"
+    assert material_code.count("https://") == 1, "Unexpected remote texture usage"
+    assert "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/blue_metal_plate/" in material_code
+    assert "params.get(\"scan\")" in material_code, "Scanned material must be explicit opt-in"
+    assert "new THREE.ImageLoader()" in material_code
+    assert "new THREE.CanvasTexture(canvas)" in material_code
+    assert "onAssetsUpdated?.({ photoScan: 'fallback' })" in material_code, "Required offline fallback"
+    assert "stage.dataset.scanStatus" in viewer_code, "Missing scan-status telemetry"
 
     fullscreen_code = (ROOT / "web" / "fullscreen.js").read_text()
     assert 'media.requestFullscreen' in fullscreen_code
