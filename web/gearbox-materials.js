@@ -2,13 +2,15 @@ import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
 /*
+ * UV diagnostic (?uvcheck=1): 4x4 grid, 20 mm/checker square.
+ * Blue frame tile period is now 80 mm rather than 400 mm.
  * Independent, never-black CAD fallback and production-oriented PBR texture
  * sets. Public mesh has 74 genuine FreeCAD-derived components with v2 normals.
  * Original files have no UVs, hence conservative planar UVs per triangle.
  * All textures/HDR are local, internally authored, and require no external API.
  */
 const finishes = {
-  paint:  { color: 0x33627c, metalness: .05, roughness: .74, clearcoat: .28, scale: 2.5, bump: .000050, seed: 1001, normalStrength: .48 },
+  paint:  { color: 0x33627c, metalness: .05, roughness: .74, clearcoat: .28, scale: 12.5, bump: .000050, seed: 1001, normalStrength: .48 },
   steel:  { color: 0xb9c9ce, metalness: .92, roughness: .33, clearcoat: .03, scale: 6.8, bump: .000025, seed: 2323, normalStrength: .30 },
   gear:   { color: 0xb57930, metalness: .96, roughness: .36, clearcoat: .02, scale: 6.1, bump: .000025, seed: 3434, normalStrength: .27 },
   wheel:  { color: 0x7398a8, metalness: .92, roughness: .38, clearcoat: .02, scale: 6.1, bump: .000028, seed: 4545, normalStrength: .25 },
@@ -216,6 +218,26 @@ export function prepareGearboxFinishes(meshes, scene, renderer, onAssetsUpdated)
   const originals = new WeakMap();
   const prepared = new WeakMap();
   const categories = new Map();
+  // Opt-in UV test paints ONLY the blue structural parts. It is deliberately
+  // unlit, so lighting/HDR cannot hide or counterfeit the texture projection.
+  const uvCheckEnabled = new URLSearchParams(window.location.search).get("uvcheck") === "1";
+  const uvMap = uvCheckEnabled ? new THREE.TextureLoader().load(
+    new URL("./media/debug/uv-checker-512.png?grid=20261019-uv1", import.meta.url).href,
+    () => onAssetsUpdated?.({ uvCheck: "ready" }),
+    undefined,
+    () => onAssetsUpdated?.({ uvCheck: "failed" }),
+  ) : null;
+  if (uvMap) {
+    uvMap.colorSpace = THREE.SRGBColorSpace;
+    uvMap.wrapS = uvMap.wrapT = THREE.RepeatWrapping;
+    uvMap.minFilter = THREE.LinearMipmapLinearFilter;
+    uvMap.magFilter = THREE.NearestFilter;
+    uvMap.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+  }
+  const uvDebugMaterial = uvMap ? new THREE.MeshBasicMaterial({
+    map: uvMap, side: THREE.DoubleSide, toneMapped: false,
+  }) : null;
+
   for (const mesh of meshes) {
     originals.set(mesh, new THREE.MeshBasicMaterial({
       color: originalCadColor(mesh.name),
@@ -273,8 +295,14 @@ export function prepareGearboxFinishes(meshes, scene, renderer, onAssetsUpdated)
   const progress = installPbrAssets(categories, renderer, onAssetsUpdated);
   return {
     apply(mode) {
-      for (const mesh of meshes) mesh.material = mode === "cad" ? originals.get(mesh) : prepared.get(mesh);
+      for (const mesh of meshes) {
+        if (mode === "cad") mesh.material = originals.get(mesh);
+        else if (uvCheckEnabled && finishForPart(mesh.name) === "paint") mesh.material = uvDebugMaterial;
+        else mesh.material = prepared.get(mesh);
+      }
     },
+    uvCheckEnabled,
+    paintTileSizeMm: 80,
     progress,
     partCount: meshes.length,
     hasGeneratedNormals: meshes.every(m => !!m.geometry.getAttribute("normal")),

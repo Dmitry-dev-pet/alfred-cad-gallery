@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MEDIA = ROOT / "web" / "media"
 
 EXPECTED = {
+    "debug/uv-checker-512.png": ("843d831f85358e1f6828b25ecbc077979f5ea2ff89795c065b12fa5380e1d871", 22345),
     "gearbox-frame-worn-blue.jpg": ("47361d2716f37a3db1b7ffcabbcedb1f394a2abde6e19f41c26deb01d704c237", 12390),
     "gearbox-public.glb": ("d5ff603a1f792bd1eef350d5eb502d83a67a366303652311b69a5ee5359e4685", 1622316),
     "rod-pendulum.glb": ("4762bfbc79925a7cae88b6ef4728122a76e11940efc4e9a9c0853881ecda54f6", 107580),
@@ -144,6 +145,10 @@ def main() -> None:
     assert 'drive.google.com' not in index
 
     material_code = (ROOT / "web" / "gearbox-materials.js").read_text()
+    assert 'scale: 12.5' in material_code, "Blue frame UV tile scale must be 80 mm"
+    assert 'uv-checker-512.png' in material_code, "Missing contrast UV checker"
+    assert 'uvCheckEnabled' in material_code, "Missing diagnostic UV mode"
+    assert 'uvDebugMaterial' in material_code, "Checker material must override paint"
     assert 'function installPbrAssets' in material_code, 'Missing real PBR map application'
     assert 'metalnessMap: "paint/metalness_2k.jpg"' in material_code, 'Chipped-metal mask missing'
     assert 'normalMap: "steel/normal_1k.jpg"' in material_code
@@ -178,9 +183,11 @@ def main() -> None:
     assert 'renderer.shadowMap.enabled = true' in viewer_code, 'Missing real shadow map'
     assert 'new THREE.ShadowMaterial' in viewer_code, 'Missing shadow receiver'
     assert 'finishMode = "photo"' in viewer_code, 'Photo should be the default'
+    assert 'stage.dataset.uvCheck' in viewer_code, "Missing UV diagnostic readback"
+    assert '80 мм/повтор' in viewer_code, "Missing physical scale UV legend"
     assert 'finishMode = { photo:"studio", studio:"cad", cad:"photo" }' in viewer_code
     assert 'group.rotation.y = phase * ratio' in viewer_code, 'Preserve shaft ratios'
-    assert 'finish=20261019-photo1' in index, 'Mobile cache-busting viewer URL missing'
+    assert 'finish=20261019-uv1' in index, 'Mobile cache-busting viewer URL missing'
     assert 'normals=v2' in viewer_code, 'Updated normal-bearing mesh URL not versioned'
     assert 'new THREE.AmbientLight(0xeaf4ff,.33)' in viewer_code
     assert 'finishController.hasGeneratedNormals' in viewer_code
@@ -194,7 +201,7 @@ def main() -> None:
     assert '.model-card-media:fullscreen' in (ROOT / "web" / "styles.css").read_text()
     assert 'importmap' in index and "three@0.180.0" in index
 
-    print("PASS: 8 baseline assets and 14 additional PBR/HDR assets match SHA-256")
+    print("PASS: 9 baseline assets (including UV checker) and 14 PBR/HDR assets match SHA-256")
     print("PASS: all three GLBs preserve expected source components")
     print("PASS: physical periods match source experiments")
     print("PASS: public gearbox is sanitized: 74 meshes, no OEM solids")

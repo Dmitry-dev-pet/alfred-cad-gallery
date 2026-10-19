@@ -30,6 +30,14 @@ The site versions its gearbox renderer, generated material module, image texture
 
 **AI-generated blue painted-frame texture (2026-10-19):** the 320 px tileable JPEG `web/media/gearbox-frame-worn-blue.jpg` is mapped onto the actual `Frame`, `MotorBracket` and `Cover_*` meshes via box-planar UV coordinates, with the original roughness/bump maps retained. No geometry or shaft kinematics are changed. On texture-loading failure, procedural paint remains. A full-resolution creative source is retained in the ChatGPT project output; an optimized copy is archived in private Alfred-CAD Drive.
 
+## Frame UV mapping diagnosis (2026-10-19)
+
+Open the interactive site with `?uvcheck=1` to paint **only the Frame / MotorBracket / Cover_*** objects with a high-contrast numbered 4×4 checker: `https://dmitry-dev-pet.github.io/alfred-cad-gallery/?uvcheck=1#projects`. One full checker repeat spans **80 mm** in object space; each grid square spans **20 mm**. The UV preview uses unlit `MeshBasicMaterial` so light and HDR cannot hide the mapping. The regular PHOTO/PBR/CAD page is unaffected by the diagnostic mode; `CAD` remains a fallback in debug mode too.
+
+Reason for this controlled experiment: the actual FreeCAD Frame bbox is approx **209.6 × 110 × 117.6 mm**, and the previous mapping multiplier 2.5 repetitions/metre covered only **0.52 UV tile** along the full 210 mm frame. The corrected painted-material mapping multiplier is **12.5 repetitions/metre** (2.62 tiles across the frame). The photosynthetic 2K paint maps from the previous stage remain *synthetic*, and increasing source resolution does not create photographic detail. This change tests texel scale and UV seams rather than pretending it already installs scanned PBR assets.
+
+**Candidate measured/photographed source for next stage:** [Poly Haven Blue Metal Plate](https://polyhaven.com/a/blue_metal_plate), Rob Tuytel, CC0. It comes from a real 2.5 m-wide blue steel gate and includes photographed diffuse, roughness and normals; it has large panel seams that must be removed or cropped carefully before use on our miniature gearbox. The third-party source has *not yet been installed as a local material*; no external CDN request is needed by the live page.
+
 ## Photographic PBR comparison in Three.js (2026-10-19)
 
 The gearbox now defaults to **PHOTO**, with a three-state 📷 PHOTO → ◈ PBR → ▦ CAD button. All 74 public FreeCAD meshes and +1 : −1/2 : +1/4 shaft speed ratios are preserved, and the unlit CAD fallback stays accessible.
