@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MEDIA = ROOT / "web" / "media"
 
 EXPECTED = {
+    "gearbox-frame-worn-blue.jpg": ("47361d2716f37a3db1b7ffcabbcedb1f394a2abde6e19f41c26deb01d704c237", 12390),
     "gearbox-public.glb": ("d5ff603a1f792bd1eef350d5eb502d83a67a366303652311b69a5ee5359e4685", 1622316),
     "rod-pendulum.glb": ("4762bfbc79925a7cae88b6ef4728122a76e11940efc4e9a9c0853881ecda54f6", 107580),
     "collar-pendulum.glb": ("f99fa4cff1ef6f1aad1df65513bc60247016f59b510ab0bd3beaad5727be28e0", 136788),
@@ -120,6 +121,9 @@ def main() -> None:
     assert 'drive.google.com' not in index
 
     material_code = (ROOT / "web" / "gearbox-materials.js").read_text()
+    assert 'gearbox-frame-worn-blue.jpg' in material_code, 'Missing real frame photo-texture'
+    assert 'new THREE.TextureLoader().load(' in material_code, 'Texture is not applied to actual geometry'
+    assert 'bluePaint.color.set(0xffffff)' in material_code, 'Blue-on-blue map darkening regression'
     assert 'function surfaceMaps' in material_code
     assert 'function rng(seed)' in material_code
     assert 'geometry.toNonIndexed()' in material_code
@@ -144,7 +148,7 @@ def main() -> None:
     assert 'color: 0xb57930' in material_code, "bronze gear finish lost"
     assert 'color: 0x2c4852' in material_code, "dark motor finish lost"
     assert 'toneMappingExposure = 1.03' in viewer_code
-    assert 'finish=20261019-v3' in index, 'Mobile cache-busting viewer URL missing'
+    assert 'finish=20261019-v4' in index, 'Mobile cache-busting viewer URL missing'
     assert 'normals=v2' in viewer_code, 'Updated normal-bearing mesh URL not versioned'
     assert 'new THREE.AmbientLight(0xffffff, .72)' in viewer_code
     assert 'finishController.hasGeneratedNormals' in viewer_code
@@ -158,7 +162,7 @@ def main() -> None:
     assert '.model-card-media:fullscreen' in (ROOT / "web" / "styles.css").read_text()
     assert 'importmap' in index and "three@0.180.0" in index
 
-    print("PASS: 7 binary assets have exact source digests")
+    print("PASS: 8 binary assets have exact source digests")
     print("PASS: all three GLBs preserve expected source components")
     print("PASS: physical periods match source experiments")
     print("PASS: public gearbox is sanitized: 74 meshes, no OEM solids")

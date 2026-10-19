@@ -215,6 +215,27 @@ export function prepareGearboxFinishes(meshes, scene, renderer) {
     categories.set(kind, material);
   }
 
+  // Apply the generated blue powder-coat image ON THE REAL FRAME MESH, not
+  // as a separate flat picture. All paint parts share the same box-UV map;
+  // procedural roughness/bump remain available for the physical finish.
+  // Failure to load the optional JPEG preserves the procedural paint map.
+  const bluePaint = categories.get("paint");
+  const paintedFrameUrl = new URL(
+    "./media/gearbox-frame-worn-blue.jpg?paint=20261019-v1", import.meta.url
+  );
+  new THREE.TextureLoader().load(paintedFrameUrl.href, texture => {
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.minFilter = THREE.LinearMipmapLinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+    bluePaint.map = texture;
+    bluePaint.color.set(0xffffff); // do not multiply a blue image by blue tint
+    bluePaint.needsUpdate = true;
+  }, undefined, error => {
+    console.warn("Generated frame texture unavailable; retaining procedural paint", error);
+  });
+
   for (const mesh of meshes) {
     const kind = finishForPart(mesh.name);
     addBoxUVs(mesh, finishes[kind].scale);

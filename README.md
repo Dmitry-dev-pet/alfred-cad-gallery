@@ -26,19 +26,21 @@ After repairing black PBR surfaces, live browser inspection showed overly unifor
 
 At normal card scale, the first procedural textures were still subpixel: Three.js mipmapping averaged their fine scratches into a nearly uniform finish. Their UV tiling was reduced again and the texture generator now uses deliberately broader longitudinal machining grooves, highly localized scuffs and coarser stippled paint. This is a **visualized industrial surface treatment** rather than a photographic scan of an actual motor or its materials. The Fullscreen control remains the best place to inspect surface detail.
 
-The site versions its gearbox renderer, generated material module, and v2-normal GLB URLs so a cached old black-mesh render should not persist after updating HTML.
+The site versions its gearbox renderer, generated material module, image texture, and v2-normal GLB URLs so a cached old black-mesh render should not persist after updating HTML.
+
+**AI-generated blue painted-frame texture (2026-10-19):** the 320 px tileable JPEG `web/media/gearbox-frame-worn-blue.jpg` is mapped onto the actual `Frame`, `MotorBracket` and `Cover_*` meshes via box-planar UV coordinates, with the original roughness/bump maps retained. No geometry or shaft kinematics are changed. On texture-loading failure, procedural paint remains. A full-resolution creative source is retained in the ChatGPT project output; an optimized copy is archived in private Alfred-CAD Drive.
 
 ## Realistic rendering and fullscreen (2026-10-19)
 
 - All **three** 3D scenes have a fullscreen button (⛶). Uses the browser's native Fullscreen API when supported, including Android; a fixed-size CSS viewport fallback works on browsers that reject fullscreen. Escape exits the fallback and native fullscreen offers standard browser exit.
-- The gearbox defaults to a physically based **PBR finish**: powder-coated frame, brushed-steel shafts, polished metal bearings, satin gears and a dark motor housing. All surface variation is **procedurally generated in-browser from deterministic seeds**. No commercial material maps, generated AI artwork, new binary assets, accounts, URLs or licenses are required.
+- The gearbox defaults to a physically based **PBR finish**: powder-coated frame, brushed-steel shafts, polished metal bearings, satin gears and a dark motor housing. The blue painted parts use an **internally AI-generated, optimized seamless JPEG color texture**. Other material finishes and the paint roughness/bump remain procedurally generated in-browser from deterministic seeds. No external material-provider services or commercial texture assets are required.
 - Since source FreeCAD-derived GLBs have **no UV coordinates**, `web/gearbox-materials.js` computes box-planar UVs per triangle before applying subtle color/roughness/bump maps. Soft studio reflections come from a locally generated Three.js RoomEnvironment. Materials never change the mesh geometry or original gear ratios.
 - The **◈ PBR / ▦ CAD** button compares realistic materials with original glTF colors. Renderers resize to the fullscreen container via ResizeObserver.
 - **Existing project portfolio is preserved at https://dmitry-dev-pet.github.io/**, in its own repository `Dmitry-dev-pet/dmitry-dev-pet.github.io`. This CAD gallery is the separate subpath `/alfred-cad-gallery/`, and links back to the main portfolio without altering its editorial curation.
 
 ## Storage and publication boundaries
 
-- **Public repository:** only reduced glTF meshes, internally produced physics footage, educational diagrams and site code.
+- **Public repository:** only reduced glTF meshes, internally produced physics footage, a generated blue paint finish, educational diagrams and site code.
 - **Private Google Drive `Alfred-CAD`:** editable `.FCStd`, `.blend`, scripts, archives, third-party components and project snapshots. The GLB copies are retained alongside their original private project folders.
 - **Private Truthrail:** hash manifests, Drive file identifiers and verified restore procedures. These are intentionally not copied into the public gallery.
 - **GitHub Actions:** Pages deployment artifact only (retention 1 day), not permanent storage.
