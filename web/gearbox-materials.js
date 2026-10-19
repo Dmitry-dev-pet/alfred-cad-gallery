@@ -18,12 +18,12 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 const finishes = {
   // Deliberately contrasting materials: previously excessive environment
   // lighting made almost every component appear monochrome silver.
-  paint:  { color: 0x33627c, metalness: .12, roughness: .72, clearcoat: .12, scale: 7,  bump: .000062, seed: 1001 },
-  steel:  { color: 0xb9c9ce, metalness: .27, roughness: .41, clearcoat: .05, scale: 11, bump: .000045, seed: 2323 },
-  gear:   { color: 0xb57930, metalness: .34, roughness: .42, clearcoat: .06, scale: 10, bump: .000053, seed: 3434 },
-  wheel:  { color: 0x7398a8, metalness: .26, roughness: .42, clearcoat: .06, scale: 10, bump: .000053, seed: 4545 },
-  motor:  { color: 0x2c4852, metalness: .09, roughness: .73, clearcoat: .07, scale: 8,  bump: .000065, seed: 5656 },
-  chrome: { color: 0xd3dde0, metalness: .39, roughness: .30, clearcoat: .08, scale: 12, bump: .000022, seed: 6767 },
+  paint:  { color: 0x33627c, metalness: .12, roughness: .72, clearcoat: .12, scale: 3.8, bump: .000090, seed: 1001 },
+  steel:  { color: 0xb9c9ce, metalness: .27, roughness: .41, clearcoat: .05, scale: 5.5, bump: .000075, seed: 2323 },
+  gear:   { color: 0xb57930, metalness: .34, roughness: .42, clearcoat: .06, scale: 5.1, bump: .000090, seed: 3434 },
+  wheel:  { color: 0x7398a8, metalness: .26, roughness: .42, clearcoat: .06, scale: 5.1, bump: .000090, seed: 4545 },
+  motor:  { color: 0x2c4852, metalness: .09, roughness: .73, clearcoat: .07, scale: 4.5, bump: .000095, seed: 5656 },
+  chrome: { color: 0xd3dde0, metalness: .39, roughness: .30, clearcoat: .08, scale: 6.0, bump: .000043, seed: 6767 },
 };
 function finishForPart(name) {
   if (name === "Frame" || name === "MotorBracket" ||
@@ -80,20 +80,22 @@ function surfaceMaps(style, renderer) {
   // Previous attempt used +/- 5 RGB steps repeated dozens of times, which
   // mipmapped to a uniform flat color and was effectively invisible.
   for (let y = 0; y < size; y++) {
-    // High/low machining bands separated by visible dark hairline scoring.
-    // Widths are designed to survive mipmapping at 300px-card resolution.
-    const wideLine = Math.sin(y * .17) * 25 + Math.sin(y * .43) * 12;
-    const machinedScore = y % 43 < 2 ? -62 : y % 67 === 1 ? 42 : 0;
+    // Coarse parallel machining strokes, spaced far enough apart to resolve
+    // on 150–350px mechanical surfaces. A few deep grooves break up smooth
+    // specular reflections even at card size.
+    const wideLine = Math.sin(y * .065) * 42 + Math.sin(y * .16) * 17;
+    const machinedScore = y % 38 < 4 ? -78 : y % 67 < 3 ? 56 : 0;
     for (let x = 0; x < size; x++) {
       const i = (y * size + x) * 4;
-      const noise = (random() - .5) * (brushed ? 24 : 47);
-      const orangePeel = Math.sin(x * .17) * Math.sin(y * .22) * 17;
-      const paintChip = coated && random() > .996 ? -72 : 0;
+      const noise = (random() - .5) * (brushed ? 23 : 39);
+      const orangePeel = Math.sin(x * .08) * Math.sin(y * .11) * 34;
+      // Visible chipped/pitted industrial paint on a small number of pixels.
+      const paintChip = coated && (x * 23 + y * 17 + style.seed) % 67 < 4 ? -84 : 0;
       const polish = brushed
         ? wideLine + machinedScore + noise
         : orangePeel + paintChip + noise;
-      const brightness = clamp(196 + polish);
-      const roughness = clamp(170 + polish * .75 + (random() - .5) * 34);
+      const brightness = clamp(202 + polish);
+      const roughness = clamp(162 + polish * .90 + (random() - .5) * 31);
       img.data[i] = img.data[i + 1] = img.data[i + 2] = brightness;
       img.data[i + 3] = 255;
       relief.data[i] = relief.data[i + 1] = relief.data[i + 2] = roughness;
