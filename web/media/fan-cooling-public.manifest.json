@@ -1,0 +1,442 @@
+{
+  "name": "fan-cooling-public.glb",
+  "size_bytes": 554084,
+  "sha256": "0688f2d65ab393858ce81cc8675817f1c8a2e81edb9cd63c1c2192a525ea3082",
+  "units": "meters",
+  "sources": {
+    "fan": "Innerscene CC0",
+    "heatsink": "Innerscene CC0",
+    "washers": "Innerscene CC0",
+    "bolts": "FreeCAD-library CC-BY-3.0",
+    "nuts": "FreeCAD-library CC-BY-3.0",
+    "shroud": "local FreeCAD parametric",
+    "heater": "dimension-only educational envelope"
+  },
+  "components": [
+    {
+      "node": "FanHousing",
+      "triangles": 2268,
+      "vertices": 2298,
+      "bbox_m": [
+        [
+          -0.06,
+          -0.06,
+          0.047
+        ],
+        [
+          0.06,
+          0.06,
+          0.072
+        ]
+      ]
+    },
+    {
+      "node": "FanRotor",
+      "triangles": 934,
+      "vertices": 1040,
+      "bbox_m": [
+        [
+          -0.05495,
+          -0.05506,
+          0.0485
+        ],
+        [
+          0.0528,
+          0.05391,
+          0.0715
+        ]
+      ]
+    },
+    {
+      "node": "HeatSink",
+      "triangles": 1628,
+      "vertices": 1808,
+      "bbox_m": [
+        [
+          -0.06,
+          -0.06,
+          0.0
+        ],
+        [
+          0.06,
+          0.06,
+          0.04
+        ]
+      ]
+    },
+    {
+      "node": "Shroud",
+      "triangles": 32,
+      "vertices": 48,
+      "bbox_m": [
+        [
+          -0.06,
+          -0.06,
+          0.04
+        ],
+        [
+          0.06,
+          0.06,
+          0.047
+        ]
+      ]
+    },
+    {
+      "node": "HeaterEnvelope",
+      "triangles": 12,
+      "vertices": 24,
+      "bbox_m": [
+        [
+          -0.03625,
+          -0.015,
+          -0.017
+        ],
+        [
+          0.03625,
+          0.015,
+          0.0
+        ]
+      ]
+    },
+    {
+      "node": "Bolt_1",
+      "triangles": 4722,
+      "vertices": 2993,
+      "bbox_m": [
+        [
+          -0.056,
+          -0.056,
+          -0.0072
+        ],
+        [
+          -0.049,
+          -0.049,
+          0.0768
+        ]
+      ]
+    },
+    {
+      "node": "Nut_1",
+      "triangles": 1140,
+      "vertices": 1166,
+      "bbox_m": [
+        [
+          -0.05604,
+          -0.05604,
+          -0.004
+        ],
+        [
+          -0.04896,
+          -0.04896,
+          -0.0008
+        ]
+      ]
+    },
+    {
+      "node": "TopWasher_1",
+      "triangles": 632,
+      "vertices": 636,
+      "bbox_m": [
+        [
+          -0.057,
+          -0.057,
+          0.072
+        ],
+        [
+          -0.048,
+          -0.048,
+          0.0728
+        ]
+      ]
+    },
+    {
+      "node": "BottomWasher_1",
+      "triangles": 632,
+      "vertices": 636,
+      "bbox_m": [
+        [
+          -0.057,
+          -0.057,
+          -0.0008
+        ],
+        [
+          -0.048,
+          -0.048,
+          0.0
+        ]
+      ]
+    },
+    {
+      "node": "Spacer_1",
+      "triangles": 632,
+      "vertices": 636,
+      "bbox_m": [
+        [
+          -0.0567,
+          -0.0567,
+          0.04
+        ],
+        [
+          -0.0483,
+          -0.0483,
+          0.047
+        ]
+      ]
+    },
+    {
+      "node": "Bolt_2",
+      "triangles": 4722,
+      "vertices": 2993,
+      "bbox_m": [
+        [
+          -0.056,
+          0.049,
+          -0.0072
+        ],
+        [
+          -0.049,
+          0.056,
+          0.0768
+        ]
+      ]
+    },
+    {
+      "node": "Nut_2",
+      "triangles": 1140,
+      "vertices": 1166,
+      "bbox_m": [
+        [
+          -0.05604,
+          0.04896,
+          -0.004
+        ],
+        [
+          -0.04896,
+          0.05604,
+          -0.0008
+        ]
+      ]
+    },
+    {
+      "node": "TopWasher_2",
+      "triangles": 632,
+      "vertices": 636,
+      "bbox_m": [
+        [
+          -0.057,
+          0.048,
+          0.072
+        ],
+        [
+          -0.048,
+          0.057,
+          0.0728
+        ]
+      ]
+    },
+    {
+      "node": "BottomWasher_2",
+      "triangles": 632,
+      "vertices": 636,
+      "bbox_m": [
+        [
+          -0.057,
+          0.048,
+          -0.0008
+        ],
+        [
+          -0.048,
+          0.057,
+          0.0
+        ]
+      ]
+    },
+    {
+      "node": "Spacer_2",
+      "triangles": 632,
+      "vertices": 636,
+      "bbox_m": [
+        [
+          -0.0567,
+          0.0483,
+          0.04
+        ],
+        [
+          -0.0483,
+          0.0567,
+          0.047
+        ]
+      ]
+    },
+    {
+      "node": "Bolt_3",
+      "triangles": 4722,
+      "vertices": 2993,
+      "bbox_m": [
+        [
+          0.049,
+          -0.056,
+          -0.0072
+        ],
+        [
+          0.056,
+          -0.049,
+          0.0768
+        ]
+      ]
+    },
+    {
+      "node": "Nut_3",
+      "triangles": 1140,
+      "vertices": 1166,
+      "bbox_m": [
+        [
+          0.04896,
+          -0.05604,
+          -0.004
+        ],
+        [
+          0.05604,
+          -0.04896,
+          -0.0008
+        ]
+      ]
+    },
+    {
+      "node": "TopWasher_3",
+      "triangles": 632,
+      "vertices": 636,
+      "bbox_m": [
+        [
+          0.048,
+          -0.057,
+          0.072
+        ],
+        [
+          0.057,
+          -0.048,
+          0.0728
+        ]
+      ]
+    },
+    {
+      "node": "BottomWasher_3",
+      "triangles": 632,
+      "vertices": 636,
+      "bbox_m": [
+        [
+          0.048,
+          -0.057,
+          -0.0008
+        ],
+        [
+          0.057,
+          -0.048,
+          0.0
+        ]
+      ]
+    },
+    {
+      "node": "Spacer_3",
+      "triangles": 632,
+      "vertices": 636,
+      "bbox_m": [
+        [
+          0.0483,
+          -0.0567,
+          0.04
+        ],
+        [
+          0.0567,
+          -0.0483,
+          0.047
+        ]
+      ]
+    },
+    {
+      "node": "Bolt_4",
+      "triangles": 4722,
+      "vertices": 2993,
+      "bbox_m": [
+        [
+          0.049,
+          0.049,
+          -0.0072
+        ],
+        [
+          0.056,
+          0.056,
+          0.0768
+        ]
+      ]
+    },
+    {
+      "node": "Nut_4",
+      "triangles": 1140,
+      "vertices": 1166,
+      "bbox_m": [
+        [
+          0.04896,
+          0.04896,
+          -0.004
+        ],
+        [
+          0.05604,
+          0.05604,
+          -0.0008
+        ]
+      ]
+    },
+    {
+      "node": "TopWasher_4",
+      "triangles": 632,
+      "vertices": 636,
+      "bbox_m": [
+        [
+          0.048,
+          0.048,
+          0.072
+        ],
+        [
+          0.057,
+          0.057,
+          0.0728
+        ]
+      ]
+    },
+    {
+      "node": "BottomWasher_4",
+      "triangles": 632,
+      "vertices": 636,
+      "bbox_m": [
+        [
+          0.048,
+          0.048,
+          -0.0008
+        ],
+        [
+          0.057,
+          0.057,
+          0.0
+        ]
+      ]
+    },
+    {
+      "node": "Spacer_4",
+      "triangles": 632,
+      "vertices": 636,
+      "bbox_m": [
+        [
+          0.0483,
+          0.0483,
+          0.04
+        ],
+        [
+          0.0567,
+          0.0567,
+          0.047
+        ]
+      ]
+    }
+  ]
+}

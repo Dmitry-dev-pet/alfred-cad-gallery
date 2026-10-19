@@ -107,3 +107,11 @@ The modified 20/40-tooth spur gear geometry originated from Innerscene's CC0 lib
 Unlike a prerendered GIF or MP4, a publicly hosted GLB contains extractable polygonal geometry and is **downloadable by any viewer**. The public gallery intentionally distributes this reduced mesh. No access credentials or private Drive file IDs are included.
 
 The gearbox speed control uses a purely kinematic relation. The animation preserves the original mesh geometry and rotates input, intermediate and output shaft groups about parallel axes at x=0, x=60 mm, and x=120 mm, with speed factors +1, −1/2 and +1/4. This does not simulate load, friction, bearing life or motor performance.
+
+## Interactive fan cooling laboratory (2026-10-19)
+
+[Open the standalone Fan Cooling Lab](https://dmitry-dev-pet.github.io/alfred-cad-gallery/fan-lab.html): responsive 3D browser experiment built from an original FreeCAD fan/heatsink assembly (Innerscene CC0 + FreeCAD library CC BY 3.0). The real GLB scene contains 25 separately named components, including a pivoted rotating fan rotor, fixed casing, heatsink, screws and a switchable shroud. Adjustable RPM (0–2400), playback speed (0.25–4×), 12-minute timeline, shroud and illustrative airflow; drag/orbit/zoom, reset camera and full screen.
+
+Temperatures are explicitly illustrative, calculated with a simple lumped thermal capacity model rather than measured or full CFD data. During 0–8 min a 40 W heat source operates; during 8–12 min the heater is off. Changing the shroud state updates both visible geometry and model heat transfer. Speed of visual simulation is independent from fan rotational speed.
+
+Reproduce the public geometry using the export script in private Alfred-CAD archival storage, check with `python3 scripts/check_fan_lab.py` and `node --check web/fan-lab.js`. The publication deploy uses the same Three.js 0.180.0 CDN as the main gallery. Source CAD and historical calculation archives remain in private Drive, not in public GitHub Pages.

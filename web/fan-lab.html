@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#091622">
+  <meta name="description" content="Alfred CAD Lab: интерактивная 3D-лаборатория вентилятора и радиатора из реальных STEP-деталей FreeCAD.">
+  <title>Fan Cooling Lab — интерактивная 3D-физика · Alfred CAD</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./fan-lab.css">
+  <script type="importmap">
+  {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}
+  </script>
+  <script type="module" src="./fan-lab.js"></script>
+</head>
+<body>
+  <header class="masthead">
+    <a class="brand" href="./index.html">ALFRED<span>/</span>CAD <small>LAB</small></a>
+    <a class="back" href="./index.html#projects">← К проектам</a>
+    <a class="github" href="https://github.com/Dmitry-dev-pet/alfred-cad-gallery" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+  </header>
+  <main>
+    <div class="intro">
+      <div class="kicker">INTERACTIVE EXPERIMENT / #004</div>
+      <h1>Охлаждение <em>в движении.</em></h1>
+      <p>Две сборки из готовых CAD-компонентов FreeCAD. Поворачивайте сцену, меняйте обороты и наблюдайте условный тепловой эксперимент прямо в браузере.</p>
+    </div>
+    <div class="workspace">
+      <section class="scene-panel" aria-label="Интерактивная сцена двух вентиляторов">
+        <div class="scene-head"><span><i class="status-dot"></i> LIVE 3D / ORIGINAL STEP</span><span>THREE.JS · GLB · 25 COMPONENTS × 2</span></div>
+        <div id="stage" class="stage" aria-label="3D-модели вентилятора и радиатора; используйте мышь или касания для вращения камеры">
+          <div id="loadState" class="load-state" role="status">Загружаем геометрию FreeCAD…</div>
+          <div class="stage-labels"><div>01 <strong>БЕЗ ВОЗДУХОВОДА</strong><span id="tempOpenStage">25,0 °C</span></div><div>02 <strong id="labelDuct">С ВОЗДУХОВОДОМ</strong><span id="tempDuctStage">25,0 °C</span></div></div>
+          <div class="stage-help">⟳ вращать · ↔ переместить · ⊕ масштаб</div>
+        </div>
+        <div class="view-tools">
+          <button id="pause" type="button" aria-pressed="false">⏸ Пауза</button>
+          <button id="reset" type="button">↺ Сначала</button>
+          <button id="camera" type="button">⌖ Камера</button>
+          <button id="fullscreen" type="button">⛶ На весь экран</button>
+        </div>
+      </section>
+      <aside class="controls" aria-label="Параметры эксперимента">
+        <p class="panel-label">CONTROL / 01</p>
+        <h2>Управление</h2>
+        <div class="control"><div class="control-header"><label for="rpm">Обороты вентилятора</label><output id="rpmVal" for="rpm">1200 об/мин</output></div><input id="rpm" type="range" min="0" max="2400" step="50" value="1200"></div>
+        <div class="control"><div class="control-header"><label for="playback">Скорость эксперимента</label><output id="playbackVal" for="playback">1,0×</output></div><input id="playback" type="range" min="0.25" max="4" step="0.25" value="1"></div>
+        <div class="control"><div class="control-header"><label for="time">Время эксперимента</label><output id="timeVal" for="time">0:00 / 12:00</output></div><input id="time" type="range" min="0" max="12" step="0.05" value="0"></div>
+        <div class="switch-panel"><label class="switch-row" for="duct"><span><strong>Воздуховод</strong><small>Показать / скрыть справа</small></span><input type="checkbox" id="duct" checked></label><label class="switch-row" for="flow"><span><strong>Показать движение воздуха</strong><small>Схематические частицы, не CFD</small></span><input type="checkbox" id="flow" checked></label></div>
+        <div class="model-status"><span>ЭТАП ЭКСПЕРИМЕНТА</span><strong id="phase">Нагрев · 40 Вт</strong><small id="modelNote">Температура рассчитана по учебной модели теплоёмкости и теплоотдачи.</small></div>
+      </aside>
+    </div>
+    <section class="results" aria-label="Результаты физической модели">
+      <div class="result-copy"><p class="panel-label">MEASUREMENTS / 02</p><h2>Два режима.<br><em>Один эксперимент.</em></h2><p>При одинаковой мощности нагревателя воздуховод направляет больше воздуха через рёбра. Однако график температуры здесь демонстрационный: сопротивления теплоотдаче заданы для обучения, а не измерены для этих деталей.</p><div class="heat-key"><span><i class="dot open"></i> Без воздуховода: <b id="tempOpen">25,0 °C</b></span><span><i class="dot duct"></i> С воздуховодом: <b id="tempDuct">25,0 °C</b></span></div></div>
+      <div class="chart-panel"><div class="chart-header"><strong>Температура нагревателя</strong><span>0–8 мин нагрев · 8–12 мин охлаждение</span></div><canvas id="chart" aria-label="Расчётные температуры двух вариантов охлаждения за 12 минут"></canvas><div class="chart-key"><span><i class="dot open"></i> Без воздуховода</span><span><i class="dot duct"></i> С воздуховодом</span><span class="legend-model">40 Вт · 25 °C · учебная модель</span></div></div>
+    </section>
+    <section class="notes"><h2>Что здесь настоящее?</h2><div class="note-grid"><article><b>01 — CAD</b><p>Вентилятор, радиатор, винты, гайки и шайбы экспортированы из настоящих STEP-моделей. Крыльчатка вращается отдельно от корпуса.</p></article><article><b>02 — Модель</b><p>Температура — решение простой модели сосредоточенной теплоёмкости C·dT/dt=P−(T−Tвозд)·G. Изменение RPM влияет на принятую теплопередачу.</p></article><article><b>03 — Ограничения</b><p>Линии воздуха иллюстративные. Здесь нет живого OpenFOAM, реальной аэродинамической характеристики вентилятора, измерений или подтверждённых температур.</p></article></div></section>
+  </main>
+  <footer><span>ALFRED / CAD LAB</span><span>FreeCAD → glTF → Three.js · Исходная геометрия: Innerscene CC0, FreeCAD Library CC BY 3.0 · Компоновка/макет — собственные.</span><a href="./credits.html">Источники ↗</a></footer>
+</body>
+</html>
