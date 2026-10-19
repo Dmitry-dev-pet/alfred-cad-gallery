@@ -1,0 +1,582 @@
+{
+  "0": {
+    "solved": {
+      "selected_gear": 0,
+      "rail_A_mm": 0.0,
+      "rail_B_mm": 0.0,
+      "pin_shift_mm": 0.0,
+      "collision_mm3": {
+        "A": 0.0,
+        "B": 0.0
+      },
+      "output_rpm": 0.0
+    },
+    "parts": {
+      "NativeShiftLever": {
+        "position_mm": [
+          30.935893,
+          -16.537327,
+          1.220975
+        ],
+        "quaternion_xyzw": [
+          -0.00872103,
+          0.0,
+          0.22096524,
+          0.97524269
+        ]
+      },
+      "NativeShiftRailA": {
+        "position_mm": [
+          0.0,
+          -0.0,
+          -0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeShiftRailB": {
+        "position_mm": [
+          -0.0,
+          -0.0,
+          -0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeShiftForkA": {
+        "position_mm": [
+          0.0,
+          -0.0,
+          -0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeShiftForkB": {
+        "position_mm": [
+          -0.0,
+          -0.0,
+          -0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeSleeveA": {
+        "position_mm": [
+          0.0,
+          60.0,
+          23.5
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.73305187,
+          -0.68017274
+        ]
+      },
+      "NativeSleeveB": {
+        "position_mm": [
+          -0.0,
+          60.0,
+          68.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.73305187,
+          -0.68017274
+        ]
+      },
+      "InterlockPin": {
+        "position_mm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeReceiverA": {
+        "position_mm": [
+          0.0,
+          0.0,
+          -0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeReceiverB": {
+        "position_mm": [
+          -0.0,
+          -0.0,
+          0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    }
+  },
+  "1": {
+    "solved": {
+      "selected_gear": 1,
+      "rail_A_mm": -3.0,
+      "rail_B_mm": 0.0,
+      "pin_shift_mm": 0.75,
+      "collision_mm3": {
+        "A": 0.0,
+        "B": 0.0
+      },
+      "output_rpm": -25.714285714285715
+    },
+    "parts": {
+      "NativeShiftLever": {
+        "position_mm": [
+          -19.585626,
+          -0.704502,
+          12.387661
+        ],
+        "quaternion_xyzw": [
+          -0.00223019,
+          0.10425941,
+          0.0024033,
+          0.99454473
+        ]
+      },
+      "NativeShiftRailA": {
+        "position_mm": [
+          0.0,
+          -0.0,
+          -3.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeShiftRailB": {
+        "position_mm": [
+          0.0,
+          -0.0,
+          -0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeShiftForkA": {
+        "position_mm": [
+          0.0,
+          -0.0,
+          -3.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeShiftForkB": {
+        "position_mm": [
+          -0.0,
+          -0.0,
+          -0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeSleeveA": {
+        "position_mm": [
+          0.0,
+          60.0,
+          20.5
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.73305187,
+          -0.68017274
+        ]
+      },
+      "NativeSleeveB": {
+        "position_mm": [
+          -0.0,
+          60.0,
+          68.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.73305187,
+          -0.68017274
+        ]
+      },
+      "InterlockPin": {
+        "position_mm": [
+          0.0,
+          0.75,
+          -0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeReceiverA": {
+        "position_mm": [
+          -0.0,
+          -0.0,
+          -3.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeReceiverB": {
+        "position_mm": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    }
+  },
+  "2": {
+    "solved": {
+      "selected_gear": 2,
+      "rail_A_mm": 3.0,
+      "rail_B_mm": 0.0,
+      "pin_shift_mm": 0.75,
+      "collision_mm3": {
+        "A": 0.0,
+        "B": 0.0
+      },
+      "output_rpm": -40.0
+    },
+    "parts": {
+      "NativeShiftLever": {
+        "position_mm": [
+          18.69689,
+          -2.840455,
+          -5.289252
+        ],
+        "quaternion_xyzw": [
+          -0.010727,
+          -0.08521331,
+          0.00784289,
+          0.99627411
+        ]
+      },
+      "NativeShiftRailA": {
+        "position_mm": [
+          -0.0,
+          -0.0,
+          3.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeShiftRailB": {
+        "position_mm": [
+          0.0,
+          0.0,
+          -0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeShiftForkA": {
+        "position_mm": [
+          -0.0,
+          -0.0,
+          3.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeShiftForkB": {
+        "position_mm": [
+          0.0,
+          -0.0,
+          -0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeSleeveA": {
+        "position_mm": [
+          0.0,
+          60.0,
+          26.5
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.73305187,
+          -0.68017274
+        ]
+      },
+      "NativeSleeveB": {
+        "position_mm": [
+          0.0,
+          60.0,
+          68.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.73305187,
+          -0.68017274
+        ]
+      },
+      "InterlockPin": {
+        "position_mm": [
+          0.0,
+          0.75,
+          -0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeReceiverA": {
+        "position_mm": [
+          -0.0,
+          0.0,
+          3.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeReceiverB": {
+        "position_mm": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    }
+  },
+  "3": {
+    "solved": {
+      "selected_gear": 3,
+      "rail_A_mm": 0.0,
+      "rail_B_mm": -3.0,
+      "pin_shift_mm": -0.75,
+      "collision_mm3": {
+        "A": 0.0,
+        "B": 0.0
+      },
+      "output_rpm": -60.0
+    },
+    "parts": {
+      "NativeShiftLever": {
+        "position_mm": [
+          16.274192,
+          -22.407336,
+          9.854489
+        ],
+        "quaternion_xyzw": [
+          -0.01042667,
+          0.10053471,
+          0.24581696,
+          0.9640322
+        ]
+      },
+      "NativeShiftRailA": {
+        "position_mm": [
+          0.0,
+          -0.0,
+          -0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeShiftRailB": {
+        "position_mm": [
+          0.0,
+          0.0,
+          -3.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeShiftForkA": {
+        "position_mm": [
+          0.0,
+          0.0,
+          -0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeShiftForkB": {
+        "position_mm": [
+          0.0,
+          0.0,
+          -3.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeSleeveA": {
+        "position_mm": [
+          -0.0,
+          60.0,
+          23.5
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.73305187,
+          -0.68017274
+        ]
+      },
+      "NativeSleeveB": {
+        "position_mm": [
+          0.0,
+          60.0,
+          65.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.73305187,
+          -0.68017274
+        ]
+      },
+      "InterlockPin": {
+        "position_mm": [
+          0.0,
+          -0.75,
+          0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeReceiverA": {
+        "position_mm": [
+          0.0,
+          0.0,
+          -0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "NativeReceiverB": {
+        "position_mm": [
+          -0.0,
+          -0.0,
+          -3.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    }
+  }
+}
