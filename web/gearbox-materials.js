@@ -16,14 +16,15 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
  * No new OEM CAD, photographs, third-party textures or network requests.
  */
 const finishes = {
-  paint:  { color: 0x7299aa, metalness: .20, roughness: .62, clearcoat: .18, scale: 10, bump: .000025, seed: 1001 },
-  steel:  { color: 0xe0e8e5, metalness: .35, roughness: .35, clearcoat: .08, scale: 15, bump: .000015, seed: 2323 },
-  gear:   { color: 0xe4b67c, metalness: .42, roughness: .38, clearcoat: .08, scale: 15, bump: .000024, seed: 3434 },
-  wheel:  { color: 0xc6d9e2, metalness: .42, roughness: .38, clearcoat: .08, scale: 15, bump: .000024, seed: 4545 },
-  motor:  { color: 0x88a4aa, metalness: .18, roughness: .60, clearcoat: .15, scale: 9,  bump: .000028, seed: 5656 },
-  chrome: { color: 0xe0ebe9, metalness: .46, roughness: .26, clearcoat: .16, scale: 18, bump: .000010, seed: 6767 },
+  // Deliberately contrasting materials: previously excessive environment
+  // lighting made almost every component appear monochrome silver.
+  paint:  { color: 0x33627c, metalness: .12, roughness: .72, clearcoat: .12, scale: 7,  bump: .000062, seed: 1001 },
+  steel:  { color: 0xb9c9ce, metalness: .27, roughness: .41, clearcoat: .05, scale: 11, bump: .000045, seed: 2323 },
+  gear:   { color: 0xb57930, metalness: .34, roughness: .42, clearcoat: .06, scale: 10, bump: .000053, seed: 3434 },
+  wheel:  { color: 0x7398a8, metalness: .26, roughness: .42, clearcoat: .06, scale: 10, bump: .000053, seed: 4545 },
+  motor:  { color: 0x2c4852, metalness: .09, roughness: .73, clearcoat: .07, scale: 8,  bump: .000065, seed: 5656 },
+  chrome: { color: 0xd3dde0, metalness: .39, roughness: .30, clearcoat: .08, scale: 12, bump: .000022, seed: 6767 },
 };
-
 function finishForPart(name) {
   if (name === "Frame" || name === "MotorBracket" ||
       name.startsWith("Cover_")) return "paint";
@@ -79,16 +80,20 @@ function surfaceMaps(style, renderer) {
   // Previous attempt used +/- 5 RGB steps repeated dozens of times, which
   // mipmapped to a uniform flat color and was effectively invisible.
   for (let y = 0; y < size; y++) {
-    const wideLine = Math.sin(y * .21) * 18 + Math.sin(y * .53) * 7;
-    const hairline = y % 47 === 0 ? 27 : y % 53 === 1 ? -24 : 0;
+    // High/low machining bands separated by visible dark hairline scoring.
+    // Widths are designed to survive mipmapping at 300px-card resolution.
+    const wideLine = Math.sin(y * .17) * 25 + Math.sin(y * .43) * 12;
+    const machinedScore = y % 43 < 2 ? -62 : y % 67 === 1 ? 42 : 0;
     for (let x = 0; x < size; x++) {
       const i = (y * size + x) * 4;
-      const noise = (random() - .5) * (brushed ? 19 : 38);
-      const cross = coated ? Math.sin((x + y) * .19) * 11 : 0;
-      const polish = brushed ? wideLine + hairline + noise : cross + noise;
-      // Saturation around 215 preserves highlights and shadow definition.
-      const brightness = clamp(216 + polish);
-      const roughness = clamp(170 + polish * .55 + (random() - .5) * 28);
+      const noise = (random() - .5) * (brushed ? 24 : 47);
+      const orangePeel = Math.sin(x * .17) * Math.sin(y * .22) * 17;
+      const paintChip = coated && random() > .996 ? -72 : 0;
+      const polish = brushed
+        ? wideLine + machinedScore + noise
+        : orangePeel + paintChip + noise;
+      const brightness = clamp(196 + polish);
+      const roughness = clamp(170 + polish * .75 + (random() - .5) * 34);
       img.data[i] = img.data[i + 1] = img.data[i + 2] = brightness;
       img.data[i + 3] = 255;
       relief.data[i] = relief.data[i + 1] = relief.data[i + 2] = roughness;
@@ -201,9 +206,9 @@ export function prepareGearboxFinishes(meshes, scene, renderer) {
       bumpScale: style.bump,
       // A small fill independent of environment/light intensity; a dark
       // renderer can no longer erase the silhouette to black.
-      emissive: new THREE.Color(style.color).multiplyScalar(.35),
-      emissiveIntensity: .45,
-      envMapIntensity: .85,
+      emissive: new THREE.Color(style.color).multiplyScalar(.20),
+      emissiveIntensity: .28,
+      envMapIntensity: .48,
     });
     categories.set(kind, material);
   }
