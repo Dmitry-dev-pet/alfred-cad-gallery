@@ -145,7 +145,7 @@ def main() -> None:
     assert 'color: 0x2c4852' in material_code, "dark motor finish lost"
     assert 'toneMappingExposure = 1.03' in viewer_code
     assert 'finish=20261019-v3' in index, 'Mobile cache-busting viewer URL missing'
-    assert 'normals=v2' in viewer_code, 'Updated normal-bearing mesh URL not versioned', "Studio exposure too high"
+    assert 'normals=v2' in viewer_code, 'Updated normal-bearing mesh URL not versioned'
     assert 'new THREE.AmbientLight(0xffffff, .72)' in viewer_code
     assert 'finishController.hasGeneratedNormals' in viewer_code
     assert "https://" not in material_code, "Unexpected external texture source"
