@@ -5,7 +5,8 @@ on:
     paths:
       - 'web/**'
       - '.github/workflows/pages.yml'
-      - 'scripts/check_gallery.py'\n      - 'scripts/check_fan_lab.py'
+      - 'scripts/check_gallery.py'
+      - 'scripts/check_fan_lab.py'
   workflow_dispatch:
 
 permissions:
@@ -31,7 +32,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Validate self-contained media and physics
         run: |
-          python3 scripts/check_gallery.py\n          python3 scripts/check_fan_lab.py\n          node --check web/fan-lab.js
+          python3 scripts/check_gallery.py
+          python3 scripts/check_fan_lab.py
+          node --check web/fan-lab.js
           node --check web/app.js
           node --check web/model-viewer.js
           node --check web/gearbox-viewer.js
