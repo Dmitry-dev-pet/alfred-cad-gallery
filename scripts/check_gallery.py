@@ -31,7 +31,7 @@ PBR_ASSETS = {
     "env/studio-softboxes-1k.hdr": ("ea15dff23437c92d047b6392b7938cd80c82950f76f252084940f81a637dee9e", 351931),
     "textures/bronze/albedo_1k.jpg": ("41bfa7e7749c68b69064b036581657cbbd9d1a8dc9293464c62edc68f07bc54d", 84435),
     "textures/bronze/normal_1k.jpg": ("bb1323bcb23ef080ad583ecd92715e7a1f19a8a105f704c0011777db610ad7a9", 138551),
-    "textures/bronze/roughness_1k.jpg": ("2392eea1ae14af4afa36b0430aaf0fd81d2bde6b9bada290fe39235e4c84f0e", 112046),
+    "textures/bronze/roughness_1k.jpg": ("2392eea1ae14af4afa36b0430a0af0fd81d2bde6b9bada290fe39235e4c84f0e", 112046),
     "textures/motor/albedo_1k.jpg": ("e8501d542afa7a449d682ea68420fda73918ca51abc50e4b57158052faa4ffa1", 46834),
     "textures/motor/normal_1k.jpg": ("a1cddd97bd98438d937440c79f0de499bc048431874619af3ebf8a8c39009145", 178204),
     "textures/motor/roughness_1k.jpg": ("efa9638a7cceac474fb5c00908f20b61584e5a4f56b4ce1b7556b27346d085b2", 155104),
