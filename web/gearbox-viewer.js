@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { prepareGearboxFinishes } from "./gearbox-materials.js";
+import { prepareGearboxFinishes } from "./gearbox-materials.js?finish=20261019-v3";
 
 // This viewer uses a reduced 74-part GLB made from the original FreeCAD
 // gearbox. The Pololu OEM motor CAD and unlicensed source geometry are NOT
@@ -207,7 +207,7 @@ if (stage) {
     resizeObserver.observe(stage);
     resize();
 
-    const url = new URL("./media/gearbox-public.glb", import.meta.url).href;
+    const url = new URL("./media/gearbox-public.glb?normals=v2", import.meta.url).href;
     new GLTFLoader().load(url, ({ scene: model }) => {
       scene.add(model);
       shafts = prepareGroups(model);

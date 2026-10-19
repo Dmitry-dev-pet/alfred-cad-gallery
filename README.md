@@ -20,6 +20,14 @@ The replacement `web/media/gearbox-public.glb` is a **v2 export** with 74/74 `NO
 
 Rendering now additionally recomputes normals defensively, reduces metallic reflectance so fallback diffuse lighting still works, introduces explicit ambient light and subtle emissive fill, provides high-contrast, lower-frequency generated industrial texture grain, and uses a lighting-independent (`MeshBasicMaterial`) CAD-colors mode. A missing optional environment map must never black out the models. CI verifies the normal attributes and shading safeguards, but a real in-browser visual test is also required.
 
+## Visible texture refinements (2026-10-19)
+
+After repairing black PBR surfaces, live browser inspection showed overly uniform silver materials. We toned down overexposed studio lights and assigned distinct pigments to six finish classes, then verified visible blue frame, bronze pinions, steel shafts, cool larger wheels and dark motor.
+
+At normal card scale, the first procedural textures were still subpixel: Three.js mipmapping averaged their fine scratches into a nearly uniform finish. Their UV tiling was reduced again and the texture generator now uses deliberately broader longitudinal machining grooves, highly localized scuffs and coarser stippled paint. This is a **visualized industrial surface treatment** rather than a photographic scan of an actual motor or its materials. The Fullscreen control remains the best place to inspect surface detail.
+
+The site versions its gearbox renderer, generated material module, and v2-normal GLB URLs so a cached old black-mesh render should not persist after updating HTML.
+
 ## Realistic rendering and fullscreen (2026-10-19)
 
 - All **three** 3D scenes have a fullscreen button (⛶). Uses the browser's native Fullscreen API when supported, including Android; a fixed-size CSS viewport fallback works on browsers that reject fullscreen. Escape exits the fallback and native fullscreen offers standard browser exit.

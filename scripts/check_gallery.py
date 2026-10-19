@@ -132,7 +132,7 @@ def main() -> None:
     assert 'emissiveIntensity:' in material_code, "PBR must not be black without IBL"
     assert 'metalness: .94' not in material_code
     assert 'scale: 90' not in material_code
-    assert 'Math.sin(y * .17)' in material_code, "No visible brushed pattern"
+    assert 'Math.sin(y * .065)' in material_code, "No visible brushed pattern"
     viewer_code = (ROOT / "web" / "gearbox-viewer.js").read_text()
     assert 'new THREE.AmbientLight' in viewer_code
     # Black was repaired in #5, but very bright studio lighting washed every
@@ -143,7 +143,9 @@ def main() -> None:
     assert 'color: 0x33627c' in material_code, "blue painted frame lost"
     assert 'color: 0xb57930' in material_code, "bronze gear finish lost"
     assert 'color: 0x2c4852' in material_code, "dark motor finish lost"
-    assert 'toneMappingExposure = 1.03' in viewer_code, "Studio exposure too high"
+    assert 'toneMappingExposure = 1.03' in viewer_code
+    assert 'finish=20261019-v3' in index, 'Mobile cache-busting viewer URL missing'
+    assert 'normals=v2' in viewer_code, 'Updated normal-bearing mesh URL not versioned', "Studio exposure too high"
     assert 'new THREE.AmbientLight(0xffffff, .72)' in viewer_code
     assert 'finishController.hasGeneratedNormals' in viewer_code
     assert "https://" not in material_code, "Unexpected external texture source"
