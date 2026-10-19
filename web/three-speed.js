@@ -33,6 +33,7 @@ let inputAngle = 0;
 let shaftAngle = 0;
 let parts = {};
 let gearMeshes = [];
+const shaftMarkerGroups = [];
 let materials = new Map();
 let poses = null;
 let spinBases = null;
@@ -130,6 +131,89 @@ function setPivot(name,x,y,z=0) {
   mesh.position.sub(new THREE.Vector3(x,y,z));
   rotNodes.set(name,pivot);
   return pivot;
+}
+// Viewer-only rotation markers. The shaft, gear and clutch shapes remain
+// untouched FreeCAD solids. The markers are children of each shaft's pivot,
+// so neutral (stationary output) and all three ratios work automatically.
+function shaftTipProfile(mesh) {
+  const geometry=mesh.geometry;
+  const positions=geometry.getAttribute('position');
+  if(!positions)throw new Error('Нет вершин у вала '+mesh.name);
+  geometry.computeBoundingBox();
+  mesh.updateMatrix();
+  const bounds=geometry.boundingBox.clone().applyMatrix4(mesh.matrix);
+  const top=bounds.max.z;
+  const span=bounds.max.z-bounds.min.z;
+  const tolerance=Math.max(.06,Math.min(.35,span*.003));
+  const vertex=new THREE.Vector3();
+  let radius=0;
+  for(let i=0;i<positions.count;i++){
+    vertex.fromBufferAttribute(positions,i).applyMatrix4(mesh.matrix);
+    if(vertex.z>=top-tolerance)radius=Math.max(radius,Math.hypot(vertex.x,vertex.y));
+  }
+  // A pointed or bevelled last vertex may not define an end-face radius.
+  if(radius<.5)radius=Math.min(bounds.max.x-bounds.min.x,bounds.max.y-bounds.min.y)*.5;
+  if(!Number.isFinite(radius)||radius<.5||!Number.isFinite(span)||span<=0)
+    throw new Error('Некорректная геометрия вала '+mesh.name);
+  return {top,span,radius};
+}
+function addShaftRotationMarker(name,color) {
+  const shaft=parts[name];
+  const pivot=rotNodes.get(name);
+  if(!shaft||!pivot)throw new Error('Нет вала для метки '+name);
+  const {top,span,radius}=shaftTipProfile(shaft);
+  const offset=Math.max(.05,radius*.018);
+  const faceZ=top+offset;
+  const material=new THREE.MeshBasicMaterial({
+    color,side:THREE.DoubleSide,depthWrite:false
+  });
+  const outline=new THREE.MeshBasicMaterial({
+    color:0x10232f,side:THREE.DoubleSide,depthWrite:false
+  });
+  const group=new THREE.Group();
+  group.name='ViewerMarker_'+name;
+  group.userData.viewerOverlay=true;
+  pivot.add(group);
+  shaftMarkerGroups.push(group);
+
+  function addOverlay(geometry,mat,z,label) {
+    const overlay=new THREE.Mesh(geometry,mat);
+    overlay.name=label+'_'+name;
+    overlay.position.z=z;
+    // Click-through: selecting the CAD shaft still reports its real name.
+    overlay.raycast=()=>{};
+    group.add(overlay);
+    return overlay;
+  }
+  // A high-contrast hand on the actual positive-Z shaft end makes rotation
+  // visible even when cylindrical side surfaces look identical.
+  const hand=addOverlay(
+    new THREE.PlaneGeometry(radius*.78,radius*.23),
+    outline,faceZ,'EndHandOutline');
+  hand.position.x=radius*.38;
+  const handInk=addOverlay(
+    new THREE.PlaneGeometry(radius*.72,radius*.13),
+    material,faceZ+offset*.14,'EndHand');
+  handInk.position.x=radius*.38;
+  const tipDot=addOverlay(
+    new THREE.CircleGeometry(radius*.17,24),
+    material,faceZ+offset*.22,'EndDot');
+  tipDot.position.x=radius*.73;
+
+  // A short longitudinal paint-like stripe follows the same shaft pivot.
+  // The end radius comes from the imported FreeCAD vertices, not a guessed
+  // diameter. Its short span avoids drawing over the whole gearbox.
+  const stripeLength=Math.min(15,span*.14);
+  if(stripeLength>1) {
+    const side=addOverlay(
+      new THREE.CylinderGeometry(radius+offset,radius+offset,stripeLength,32,1,true,-.17,.34),
+      material,top-stripeLength*.5-offset*4,'SideStripe');
+    side.rotation.x=Math.PI*.5; // Three.js cylinder Y-axis → shaft Z-axis
+  }
+}
+function setShaftMarkerVisibility() {
+  const visible=$('shaftMarkersToggle').checked;
+  for(const group of shaftMarkerGroups)group.visible=visible;
 }
 function leverPoseAsMatrix(pose,into) {
   return into.compose(
@@ -401,6 +485,7 @@ $('fullscreen').addEventListener('click',async()=>{
 $('rpmRange').addEventListener('input',e=>{rpm=Number(e.target.value);updateSpeed();});
 $('playPause').addEventListener('click',()=>{if(!ready||transition)return;playing=!playing;setStatus(playing?'Вращение возобновлено.':'Вращение остановлено. Можно рассмотреть или переключить передачу.');updateButtons();});
 $('xrayToggle').addEventListener('change',e=>{xray=e.target.checked;setXray();});
+$('shaftMarkersToggle').addEventListener('change',setShaftMarkerVisibility);
 $('hardwareToggle').addEventListener('change',e=>{hardware=e.target.checked;setGuideVisibility();});
 document.querySelectorAll('.gear-btn').forEach(button=>button.addEventListener('click',()=>beginShift(Number(button.dataset.gear))));
 window.addEventListener('keydown',e=>{
@@ -447,6 +532,9 @@ try{
   if(required.some(n=>!parts[n]))throw new Error('Экспорт GLB неполон');
   for(const n of ['InputShaft','GearInput1','GearInput2','GearInput3'])setPivot(n,0,0,0);
   for(const n of ['NativeOutputShaft','SplineA','SplineB','GearOutput1','GearOutput2','GearOutput3','Dogs1','Dogs2','Dogs3','NativeSleeveA','NativeSleeveB'])setPivot(n,0,60,0);
+  addShaftRotationMarker('InputShaft',0xffc264);
+  addShaftRotationMarker('NativeOutputShaft',0x65e5ff);
+  setShaftMarkerVisibility();
   leverPoseAsMatrix(readPose(0),neutralMatrix);neutralInverse.copy(neutralMatrix).invert();
   currentLeverPose=readPose(0);
   applyLever(currentLeverPose);applyTravel();applyRotation();setGuideVisibility();setXray();highlight();
