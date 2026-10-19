@@ -7,6 +7,7 @@ on:
       - '.github/workflows/pages.yml'
       - 'scripts/check_gallery.py'
       - 'scripts/check_fan_lab.py'
+      - 'scripts/check_three_speed.py'
   workflow_dispatch:
 
 permissions:
@@ -34,6 +35,8 @@ jobs:
         run: |
           python3 scripts/check_gallery.py
           python3 scripts/check_fan_lab.py
+          python3 scripts/check_three_speed.py
+          node --check web/three-speed.js
           node --check web/fan-lab.js
           node --check web/app.js
           node --check web/model-viewer.js
