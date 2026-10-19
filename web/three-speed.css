@@ -13,3 +13,12 @@
 .shift-progress>span{display:block;width:0;height:100%;background:linear-gradient(90deg,#e6b66f,#7ee1ca);transition:width .09s linear}
 @media(max-width:1060px){.control-panel>.shift-flow,.control-panel>.shift-progress{grid-column:1}}
 @media(max-width:640px){.viewport-bottom{flex-direction:column-reverse;align-items:flex-end}.legend{max-width:100%;align-self:flex-start}.camera-actions button{font-size:12px}}
+
+/* Viewer-only end/side shaft motion markers; marker color denotes shaft role. */
+.shaft-marker-key{display:flex;flex-wrap:wrap;gap:8px 13px;margin:0 0 4px 27px;color:#aec6cb;font-size:11px}
+.shaft-marker-key span{display:inline-flex;align-items:center;gap:6px}
+.shaft-swatch{display:inline-block;width:11px;height:11px;border-radius:50%;box-shadow:0 0 0 1px #193440}
+.shaft-swatch.input{background:#ffc264}
+.shaft-swatch.output{background:#65e5ff}
+@media(max-width:1060px){.control-panel>.shaft-marker-key{grid-column:2}}
+@media(max-width:640px){.control-panel>.shaft-marker-key{margin-bottom:8px}}
