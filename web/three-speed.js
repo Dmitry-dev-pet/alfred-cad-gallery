@@ -15,6 +15,12 @@ const stageNotes = [
   'Муфта A сдвинута вверх на 3 мм и замыкает вторую пару.',
   'Муфта B сдвинута вниз на 3 мм, шток A заблокирован.'
 ];
+const shiftStageLabels = {
+  release: 'Освобождение муфты',
+  select: 'Выбор штока',
+  align: 'Совмещение кулачков',
+  engage: 'Включение передачи'
+};
 const modelPath = './media/three-speed-stage5.glb?v=20261019-1';
 const posePath = './media/three-speed-poses.json?v=20261019-1';
 const spinPath = './media/three-speed-spin-poses.json?v=20261019-1';
@@ -34,6 +40,7 @@ let ready = false;
 let xray = false;
 let hardware = true;
 let currentLeverPose = null;
+let cameraFlight = null;
 const motion = {a:0,b:0,pin:0};
 const rotNodes = new Map();
 const viewport = $('viewport');
@@ -102,8 +109,12 @@ function updateButtons() {
   $('playPause').textContent = playing ? '⏸ Остановить вращение' : '▶ Запустить вращение';
   $('playPause').disabled = !ready || Boolean(transition);
   $('gearMode').textContent = transition ? 'ПЕРЕКЛЮЧЕНИЕ / ВАЛ ОСТАНОВЛЕН' : (gear ? `${gear}-Я ПЕРЕДАЧА / ВКЛЮЧЕНА` : 'NEUTRAL / ХОЛОСТОЙ ХОД');
-  $('currentPair').textContent = transition ? 'Перемещение штоков и кулачковой муфты' : (gear ? teeth[gear] : 'Нет передачи момента');
-  $('gearNote').textContent = stageNotes[gear];
+  $('currentPair').textContent = transition
+    ? `${transition.to ? teeth[transition.to] : 'Нейтраль'} · ${shiftStageLabels[transition.step]}`
+    : (gear ? teeth[gear] : 'Нет передачи момента');
+  $('gearNote').textContent = transition
+    ? 'Следите за подсвеченными деталями: рычаг → шток → вилка → муфта.'
+    : stageNotes[gear];
   updateSpeed();
 }
 function phase(t) {const x=THREE.MathUtils.clamp(t,0,1);return x*x*(3-2*x);}
@@ -167,12 +178,43 @@ function setXray() {
     m.material.needsUpdate=true;
   });
 }
+function glow(names,color,strength) {
+  for(const name of names) {
+    const material=parts[name]?.material;
+    if(!material?.emissive)continue;
+    material.emissive.setHex(color);
+    material.emissiveIntensity=strength;
+  }
+}
 function highlight() {
-  for(let i=1;i<=3;i++) {
-    const mesh=parts['GearOutput'+i];
-    if(!mesh)continue;
-    mesh.material.emissive.setHex(gear===i?0x215a42:0x000000);
-    mesh.material.emissiveIntensity=gear===i?.34:0;
+  // Only CAD-derived nodes are highlighted; the mesh geometry stays untouched.
+  for(const part of Object.values(parts)) {
+    if(!part.material?.emissive)continue;
+    part.material.emissive.setHex(0x000000);
+    part.material.emissiveIntensity=0;
+  }
+  const sh=transition;
+  if(sh){
+    const source=sh.from, target=sh.to;
+    const letter=(target===3?'B':'A');
+    if(sh.step==='release') {
+      const old=(source===3?'B':'A');
+      glow(['NativeShiftLever',`NativeShiftRail${old}`,`NativeShiftFork${old}`,`NativeSleeve${old}`],0xff9b56,.66);
+      if(source)glow([`GearOutput${source}`,`Dogs${source}`],0xffbd61,.35);
+    }else if(sh.step==='select') {
+      glow(['NativeShiftLever',`NativeReceiver${letter}`,`NativeShiftRail${letter}`],0xffb065,.78);
+      glow(['InterlockPin'],0xff7f68,.88);
+    }else if(sh.step==='align') {
+      glow([`GearOutput${target}`,`Dogs${target}`,`NativeSleeve${letter}`],0xf3c86e,.68);
+    }else if(sh.step==='engage') {
+      glow(['NativeShiftLever',`NativeReceiver${letter}`,`NativeShiftRail${letter}`,`NativeShiftFork${letter}`],0xff9f59,.7);
+      glow([`NativeSleeve${letter}`,`Dogs${target}`],0x7cefc6,.82);
+      glow([`GearInput${target}`,`GearOutput${target}`],0x54bca4,.35);
+    }
+  }else if(gear) {
+    const letter=(gear===3?'B':'A');
+    glow([`GearInput${gear}`,`GearOutput${gear}`],0x4fc4ac,.45);
+    glow([`NativeSleeve${letter}`,`Dogs${gear}`],0x96e9bd,.64);
   }
 }
 function applyRotation() {
@@ -195,44 +237,100 @@ function closestDogAlignment(g){
   target += Math.round((shaftAngle-target)/step)*step;
   return target;
 }
+function updateShiftFlow() {
+  const sh=transition;
+  const current=sh ? sh.segments.findIndex(p=>p.id===sh.step) : -1;
+  document.querySelectorAll('.shift-step').forEach(node=>{
+    const i=sh ? sh.segments.findIndex(p=>p.id===node.dataset.step) : -1;
+    const active=i>=0 && i===current;
+    node.classList.toggle('active',active);
+    node.classList.toggle('done',i>=0 && i<current);
+    node.classList.toggle('skipped',Boolean(sh) && i<0);
+    if(active)node.setAttribute('aria-current','step');
+    else node.removeAttribute('aria-current');
+  });
+  $('shiftProgressBar').style.width=sh ? `${100*sh.elapsed/sh.duration}%` : '0%';
+}
+function shiftStageStatus(stage,sh) {
+  const old=(sh.from===3?'B':'A');
+  const next=(sh.to===3?'B':'A');
+  if(stage==='release')return `Вилка ${old} отводит муфту ${old} в нейтраль; прежняя передача выключается.`;
+  if(stage==='select')return `Рычаг выбирает шток ${next}; блокирующий палец исключает другой шток.`;
+  if(stage==='align')return 'Валы остановлены. Кулачки совмещаются небольшим поворотом выходного вала.';
+  return `Шток ${next} ведёт вилку и муфту ${next} на 3 мм — включается ${names[sh.to].toLowerCase()}.`;
+}
+function setShiftStep(id) {
+  if(!transition || transition.step===id)return;
+  transition.step=id;
+  setStatus(shiftStageStatus(id,transition));
+  updateButtons();
+  updateShiftFlow();
+  highlight();
+}
 function beginShift(target) {
   if(!ready||transition||target===gear)return;
-  const wasRunning=playing;
-  playing=false; // unsynchronised dog clutches: no motion during the shift
   const from=gear;
-  transition={from,to:target,elapsed:0,duration:1.04,resume:wasRunning,shaftFrom:shaftAngle,shaftTo:target?closestDogAlignment(target):shaftAngle};
+  const wasRunning=playing;
+  playing=false; // Unsynchronised dog clutches: freeze input before any shift.
+  const segments=target===0
+    ? [{id:'release',duration:1.5}]
+    : [
+        ...(from ? [{id:'release',duration:1.25}] : []),
+        {id:'select',duration:.85},
+        {id:'align',duration:.65},
+        {id:'engage',duration:1.35}
+      ];
+  transition={
+    from,to:target,segments,step:null,elapsed:0,
+    duration:segments.reduce((sum,p)=>sum+p.duration,0),
+    resume:wasRunning,
+    shaftFrom:shaftAngle,
+    shaftTo:target ? closestDogAlignment(target) : shaftAngle
+  };
   gear=0;activeGear=0;
-  setStatus('Ведущий вал остановлен. Сначала нейтраль, затем блокирующий палец и выбранная муфта.');
-  updateButtons();highlight();
+  if($('autoFocusToggle').checked)focusMechanism(target||from||1);
+  setShiftStep(segments[0].id);
 }
 function doShift(dt) {
   const sh=transition;if(!sh)return;
-  sh.elapsed+=dt;
-  const t=Math.min(1,sh.elapsed/sh.duration);
+  sh.elapsed=Math.min(sh.duration,sh.elapsed+dt);
+  let remaining=sh.elapsed;
+  let segment=sh.segments[sh.segments.length-1];
+  for(const candidate of sh.segments) {
+    segment=candidate;
+    if(remaining<=candidate.duration)break;
+    remaining-=candidate.duration;
+  }
+  const x=phase(remaining/segment.duration);
+  setShiftStep(segment.id);
   const before=poses[String(sh.from)].solved;
   const after=poses[String(sh.to)].solved;
-  if(t<=.35){
-    const a=1-phase(t/.35);
-    motion.a=before.rail_A_mm*a;
-    motion.b=before.rail_B_mm*a;
-    motion.pin=before.pin_shift_mm*a;
-    blendLever(readPose(sh.from),readPose(0),phase(t/.35));
-  }else if(t<=.58){
-    const x=phase((t-.35)/.23);
+  if(segment.id==='release') {
+    motion.a=before.rail_A_mm*(1-x);
+    motion.b=before.rail_B_mm*(1-x);
+    motion.pin=before.pin_shift_mm*(1-x);
+    shaftAngle=sh.shaftFrom;
+    blendLever(readPose(sh.from),readPose(0),x);
+  }else if(segment.id==='select') {
     motion.a=0;motion.b=0;
     motion.pin=after.pin_shift_mm*x;
+    shaftAngle=sh.shaftFrom;
+    blendLever(readPose(0),readPose(sh.to),.25*x);
+  }else if(segment.id==='align') {
+    motion.a=0;motion.b=0;
+    motion.pin=after.pin_shift_mm;
     shaftAngle=THREE.MathUtils.lerp(sh.shaftFrom,sh.shaftTo,x);
-    blendLever(readPose(0),readPose(sh.to),x*.28);
-  }else{
-    const x=phase((t-.58)/.42);
+    blendLever(readPose(0),readPose(sh.to),.25);
+  }else {
     motion.a=after.rail_A_mm*x;
     motion.b=after.rail_B_mm*x;
     motion.pin=after.pin_shift_mm;
     shaftAngle=sh.shaftTo;
-    blendLever(readPose(0),readPose(sh.to),.28+.72*x);
+    blendLever(readPose(0),readPose(sh.to),.25+.75*x);
   }
   applyTravel();
-  if(t>=1){
+  $('shiftProgressBar').style.width=`${100*sh.elapsed/sh.duration}%`;
+  if(sh.elapsed>=sh.duration) {
     motion.a=after.rail_A_mm;
     motion.b=after.rail_B_mm;
     motion.pin=after.pin_shift_mm;
@@ -240,8 +338,10 @@ function doShift(dt) {
     activeGear=sh.to;gear=sh.to;
     transition=null;
     playing=sh.resume;
-    highlight();updateButtons();
-    setStatus(gear ? `${names[gear]} включена. Ведомый вал вращается в противоположную сторону.` : 'Нейтраль. Все пары шестерён вращаются, но крутящий момент не передаётся.');
+    highlight();updateButtons();updateShiftFlow();
+    setStatus(gear
+      ? `${names[gear]} включена. Подсвечен путь вращения через выбранную пару шестерён.`
+      : 'Нейтраль. Все пары шестерён вращаются, но крутящий момент не передаётся.');
   }
 }
 const displayNames={
@@ -269,11 +369,31 @@ function onPointerUp(e) {
   }
 }
 let pointerDrag=false,downPoint=null;
-renderer.domElement.addEventListener('pointerdown',e=>{pointerDrag=false;downPoint={x:e.clientX,y:e.clientY};});
+renderer.domElement.addEventListener('pointerdown',e=>{cameraFlight=null;pointerDrag=false;downPoint={x:e.clientX,y:e.clientY};});
 renderer.domElement.addEventListener('pointermove',e=>{if(downPoint&&Math.hypot(e.clientX-downPoint.x,e.clientY-downPoint.y)>6)pointerDrag=true;});
 renderer.domElement.addEventListener('pointerup',e=>{onPointerUp(e);downPoint=null;});
-function resetCamera(){camera.position.copy(cameraStart);controls.target.copy(lookAt);controls.update();}
+function flyCamera(toPosition,toTarget) {
+  cameraFlight={
+    fromPosition:camera.position.clone(),fromTarget:controls.target.clone(),
+    toPosition,toTarget,elapsed:0,duration:.85
+  };
+}
+function focusMechanism(g) {
+  const target=new THREE.Vector3(11,40,g===3?67:34);
+  flyCamera(target.clone().add(new THREE.Vector3(140,-135,105)),target);
+}
+function updateCameraFlight(dt) {
+  if(!cameraFlight)return;
+  const flight=cameraFlight;
+  flight.elapsed+=dt;
+  const f=phase(flight.elapsed/flight.duration);
+  camera.position.lerpVectors(flight.fromPosition,flight.toPosition,f);
+  controls.target.lerpVectors(flight.fromTarget,flight.toTarget,f);
+  if(f>=1)cameraFlight=null;
+}
+function resetCamera(){cameraFlight=null;camera.position.copy(cameraStart);controls.target.copy(lookAt);controls.update();}
 $('cameraReset').addEventListener('click',resetCamera);
+$('cameraMechanism').addEventListener('click',()=>focusMechanism(transition?.to||gear||1));
 $('fullscreen').addEventListener('click',async()=>{
   if(document.fullscreenElement){await document.exitFullscreen().catch(()=>{});return;}
   await viewport.requestFullscreen?.().catch(()=>setStatus('Полноэкранный режим не поддерживается этим браузером.'));
@@ -303,6 +423,7 @@ function animate(){
     }
     applyRotation();
   }
+  updateCameraFlight(dt);
   controls.update();renderer.render(scene,camera);
 }
 resize();animate();
@@ -331,7 +452,7 @@ try{
   applyLever(currentLeverPose);applyTravel();applyRotation();setGuideVisibility();setXray();highlight();
   $('loading').classList.add('hidden');
   $('renderStatus').textContent='34 CAD-детали · 51 534 треугольника';
-  ready=true;updateButtons();
+  ready=true;updateButtons();updateShiftFlow();
   setStatus('Вращается ведущий вал. Выберите 1, 2 или 3: коробка остановится и переключится автоматически.');
   resize();
 }catch(err){
