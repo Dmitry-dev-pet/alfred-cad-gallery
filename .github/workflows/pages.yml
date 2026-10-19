@@ -5,6 +5,7 @@ on:
     paths:
       - 'web/**'
       - '.github/workflows/pages.yml'
+      - 'scripts/check_gallery.py'
   workflow_dispatch:
 
 permissions:
