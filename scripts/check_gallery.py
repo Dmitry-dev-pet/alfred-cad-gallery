@@ -56,6 +56,11 @@ def check_gearbox() -> None:
                  "Bearing_1_Lower", "Bearing_2_Upper", "Screw_LB_Top"}
     assert not (names & forbidden), "Proprietary/manufacturer source CAD leaked!"
     assert len(gltf["meshes"]) == 74, "Unexpected changed public mesh inventory"
+    # The source GLB lacks NORMAL; the runtime is required to generate them.
+    source_has_normals = sum("NORMAL" in primitive["attributes"]
+                             for mesh in gltf["meshes"]
+                             for primitive in mesh["primitives"])
+    assert source_has_normals == 0, "Unexpected changed normal baseline"
     assert len([n for n in names if n and n.startswith("BearingGeneric_")]) == 6
 
     viewer = (ROOT / "web" / "gearbox-viewer.js").read_text()
@@ -120,6 +125,16 @@ def main() -> None:
     assert 'geometry.setAttribute("uv"' in material_code
     assert 'new THREE.MeshPhysicalMaterial' in material_code
     assert 'RoomEnvironment' in material_code
+    assert 'geometry.computeVertexNormals()' in material_code, "Missing normal repair"
+    assert 'hasGeneratedNormals:' in material_code
+    assert 'new THREE.MeshBasicMaterial' in material_code, "CAD fallback must be unlit"
+    assert 'emissiveIntensity:' in material_code, "PBR must not be black without IBL"
+    assert 'metalness: .94' not in material_code
+    assert 'scale: 90' not in material_code
+    assert 'Math.sin(y * .21)' in material_code, "No visible brushed pattern"
+    viewer_code = (ROOT / "web" / "gearbox-viewer.js").read_text()
+    assert 'new THREE.AmbientLight' in viewer_code
+    assert 'finishController.hasGeneratedNormals' in viewer_code
     assert "https://" not in material_code, "Unexpected external texture source"
 
     fullscreen_code = (ROOT / "web" / "fullscreen.js").read_text()
@@ -134,7 +149,9 @@ def main() -> None:
     print("PASS: all three GLBs preserve expected source components")
     print("PASS: physical periods match source experiments")
     print("PASS: public gearbox is sanitized: 74 meshes, no OEM solids")
-    print("PASS: PBR textures have generated UVs and no external texture dependencies")
+    print("PASS: GLB source normals repaired before PBR shading")
+    print("PASS: ambient/emissive PBR + unlit CAD fallback prevent black models")
+    print("PASS: visible PBR textures have generated UVs and no external dependencies")
     print("PASS: three native/mobile fallback fullscreen controls")
     print("PASS: previous portfolio root is linked and untouched")
     print("PASS: website references and publication boundaries")
